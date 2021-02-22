@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#"><img src=" {{ url_for('static', filename='image/rsz_1logo.png')}} " class="brand_logo " width="120px" height="60px"  alt="Logo"></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -31,7 +31,11 @@
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
+        {% if current_user.is_anonymous %}
         <a href="{{ url_for('admin_login') }}"><button class="btn btn-success ms-2">Admin</button></a>
+        {% else %}
+        <a href="{{ url_for('admin_logout') }}"><button class="btn btn-success ms-2">LogOut</button></a>
+        {% endif %}
       </div>
     </div>
   </nav>
