@@ -9,9 +9,17 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href=" {{ url_for('add_worker') }} ">Worker</a>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Student
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href=" {{ url_for('add_student') }} ">Add Student</a></li>
+              <li><a class="dropdown-item" href=" {{ url_for('student_Detials') }} ">Student Detials</a></li>
+            </ul>
           </li>
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Worker
@@ -22,6 +30,19 @@
               <li><a class="dropdown-item" href=" {{ url_for('worker_detials') }} ">Worker Detials</a></li>
             </ul>
           </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Classes
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href=" {{ url_for('add_class') }} ">Add Class</a></li>
+              <li><a class="dropdown-item" href="#">empty</a></li>
+            </ul>
+          </li>
+
+          
+
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown

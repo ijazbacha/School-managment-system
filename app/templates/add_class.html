@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+<h1 class="text-center mt-4">Add Class</h1>
+
+<form method="POST">
+    <div class="mb-3">
+      <label for="Inputname" class="form-label">Class Name:</label>
+      <input type="text" class="form-control" name="cls_name" id="Inputname" placeholder="enter class name" required>
+    </div>
+    <button type="submit" class="btn btn-success">Add</button>
+</form>
+
+<hr>
+<table class="table mt-4">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+      </tr>
+    </thead>
+    {% for class in classes %}
+    <tbody>
+      <tr>
+        <td> {{ class.id }}</td>
+        <td> {{ class.cls_name }} </td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

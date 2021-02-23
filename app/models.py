@@ -30,10 +30,10 @@ def load_user(id):
 class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cls_name = db.Column(db.String(64), index=True)
-    student = db.relationship('Student', backref='class')
+    student = db.relationship('Student', backref='stdclass')
 
     def __repr__(self):
-        return 'Student {}'.format(self.cls_name)
+        return 'Class {}'.format(self.cls_name)
 
 
 class Student(db.Model):

@@ -1,7 +1,8 @@
+from sqlalchemy.orm import query
 from app import app, db
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin, Student, Teacher, Worker
+from app.models import Admin, Student, Teacher, Worker, Class
 
 
 
@@ -44,6 +45,7 @@ def admin_logout():
     flash('Successfully logout.')
     return redirect(url_for('admin_login'))
 
+
 @app.route('/admin_registration', methods=['POST', 'GET'])
 def admin_registration():
     if current_user.is_authenticated:
@@ -54,6 +56,10 @@ def admin_registration():
         email = request.form['email']
         password = request.form['password']
         repeatpassword = request.form['repeatpassword']
+
+        if len(password) < 8:
+            flash('Password must be 8 or greater!')
+            return redirect(url_for('admin_registration'))
 
         if password != repeatpassword:
             flash('Your password is not match!')
@@ -76,6 +82,52 @@ def admin_registration():
         flash("Successfully register")
         return redirect(url_for('admin_login'))
     return render_template('register.html', title='Registration')
+
+
+@app.route('/add_class', methods=['GET', 'POST'])
+def add_class():
+    classes = Class.query.all()
+    if request.method == 'POST':
+        cls_name = request.form['cls_name']
+        db.session.add(Class(cls_name=cls_name))
+        db.session.commit()
+        return redirect(url_for('add_class'))
+    return render_template('add_class.html', classes=classes)
+
+
+
+@app.route('/add_student', methods=['GET', 'POST'])
+def add_student():
+    classes = Class.query.all()
+    if request.method == 'POST':
+        std_name = request.form['std_name']
+        f_name = request.form['f_name']
+        std_address = request.form['std_address']
+        std_contact = request.form['std_contact']
+        stdclass = request.form['stdclass']
+
+        classes = Class.query.filter_by(id=stdclass).first()
+        student = Student(
+            std_name=std_name,
+            f_name=f_name,
+            std_address=std_address,
+            std_contact=std_contact,
+            stdclass=classes,
+            admin=current_user
+                        )
+        db.session.add(student)
+        db.session.commit()
+        flash('Student successfully added')
+        return redirect(url_for('add_student'))
+
+    return render_template('add_student.html', title='Add Student', classes=classes)
+
+
+@app.route('/student_Detials')
+def student_Detials():
+    students = Student.query.all()
+    return render_template('student_Detials.html', title='Student Detials', students=students)
+
 
 
 @app.route('/add_worker', methods=['GET', 'POST'])
