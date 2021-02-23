@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container mt-2">
+<h1>Worker Form</h1>
+<form method="POST">
+    <div class="mb-3">
+      <label for="Inputname" class="form-label">Worker Name:</label>
+      <input type="text" class="form-control" name="worker_name" id="Inputname" placeholder="enter name" required>
+    </div>
+    <div class="mb-3">
+        <label for="Inputaddress" class="form-label">Worker Address:</label>
+        <input type="text" class="form-control" name="worker_address" id="Inputaddress" placeholder="enter address" required>
+    </div>
+    <div class="mb-3">
+        <label for="Inputcontact" class="form-label">Worker Contact:</label>
+        <input type="tel" class="form-control" name="worker_contact" id="Inputcontact" placeholder="enter contact" required>
+    </div>
+    
+    <button type="submit" class="btn btn-success">Add Worker</button>
+  </form>
+</div>
+
+{% endblock %}

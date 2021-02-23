@@ -1,8 +1,7 @@
 from app import app, db
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin
-from is_safe_url import is_safe_url
+from app.models import Admin, Student, Teacher, Worker
 
 
 
@@ -77,3 +76,25 @@ def admin_registration():
         flash("Successfully register")
         return redirect(url_for('admin_login'))
     return render_template('register.html', title='Registration')
+
+
+@app.route('/add_worker', methods=['GET', 'POST'])
+@login_required
+def add_worker():
+    if request.method == 'POST':
+        worker_name = request.form['worker_name']
+        worker_address = request.form['worker_address']
+        worker_contact = request.form['worker_contact']
+        worker = Worker(worker_name=worker_name, worker_address=worker_address, worker_contact=worker_contact, admin=current_user)
+        db.session.add(worker)
+        db.session.commit()
+        return redirect(url_for('add_worker'))
+
+    return render_template('worker.html', title='Worker')
+
+
+@app.route('/worker_detials')
+def worker_detials():
+    workers = Worker.query.all()
+    return render_template('worker_detials.html', title='Worker Detials', workers=workers)
+
