@@ -95,6 +95,20 @@ def add_class():
     return render_template('add_class.html', classes=classes)
 
 
+@app.route('/list_of_class')
+def list_of_class():
+    classes = Class.query.all()
+    return render_template('list_of_class.html', classes=classes)
+
+
+@app.route('/class_wise_student/<std_class>')
+def class_wise_student(std_class):
+    class_name = Class.query.filter_by(id=std_class).first()
+    students = Student.query.filter_by(std_class=std_class).all()
+    return render_template('class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students)
+
+
+
 
 @app.route('/add_student', methods=['GET', 'POST'])
 def add_student():
