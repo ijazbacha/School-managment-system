@@ -18,18 +18,20 @@
         <th scope="col">Contact</th>
         <th scope="col">Class</th>
         <th scope="col">Admin</th>
+        <th scope="col">Profile</th>
       </tr>
     </thead>
     {% for student in students %}
     <tbody>
       <tr>
         <td> {{ student.id }}</td>
-        <td> {{ student.std_name }} </td>
+        <td>  {{ student.std_name }} </td>
         <td> {{ student.f_name }} </td>
         <td> {{ student.std_address }} </td>
         <td> {{ student.std_contact }} </td>
         <td> {{ student.stdclass.cls_name }} </td>
         <td> {{ student.admin.username }} </td>
+        <td> <a href=" {{ url_for('student_profile', id=student.id)}} "> <button type="submit" class="btn btn-success">  Profile </button> </a></td>
       </tr>
     </tbody>
     {% endfor %}

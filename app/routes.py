@@ -86,13 +86,13 @@ def admin_registration():
 
 @app.route('/add_class', methods=['GET', 'POST'])
 def add_class():
-    classes = Class.query.all()
     if request.method == 'POST':
         cls_name = request.form['cls_name']
         db.session.add(Class(cls_name=cls_name))
         db.session.commit()
-        return redirect(url_for('add_class'))
-    return render_template('add_class.html', classes=classes)
+        flash('Class successfully added!')
+        return redirect(url_for('list_of_class'))
+    return render_template('add_class.html')
 
 
 @app.route('/list_of_class')
@@ -141,6 +141,12 @@ def add_student():
 def student_Detials():
     students = Student.query.all()
     return render_template('student_Detials.html', title='Student Detials', students=students)
+
+
+@app.route('/student_profile/<id>')
+def student_profile(id):
+    student_profile = Student.query.filter_by(id=id).first()
+    return render_template('student_profile.html', title='Student Profile', student_profile=student_profile)
 
 
 

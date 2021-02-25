@@ -19,15 +19,11 @@
               <li><a class="dropdown-item" href=" {{ url_for('student_Detials') }} ">Student Detials</a></li>
             </ul>
           </li>
+          
 
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Classes
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href=" {{ url_for('add_class') }} ">Add Class</a></li>
-              <li><a class="dropdown-item" href=" {{ url_for('list_of_class')}} ">Class List</a></li>
-            </ul>
+          
+          <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="{{ url_for('list_of_class') }}">Classes</a>
           </li>
 
           <li class="nav-item dropdown">

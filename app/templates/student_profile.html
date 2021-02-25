@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1>Student Profile</h1>
+    <h3><b> Name: </b> {{ student_profile.std_name }} </h3>
+    <p><b> Father Name: </b> {{ student_profile.f_name }} </p>
+    <p><b> Address: </b> {{ student_profile.std_address }} </p>
+    <p><b> Contact: </b> {{ student_profile.std_contact }} </p>
+    <p><b> Class: </b> {{ student_profile.stdclass.cls_name }} </p>
+    
+    <form method="POST">
+        <button type="submit" class="btn btn-success">Update</button>
+        <button type="submit" class="btn btn-danger">Leave</button>
+      </form>
+</div>
+
+
+{% endblock %}

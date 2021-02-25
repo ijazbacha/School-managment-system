@@ -4,7 +4,12 @@
 {% block content %}
 
 <div class="container">
-<h1 class="text-center mt-4">List of Class</h1>
+
+  <a href=" {{ url_for('add_class') }} ">
+    <button type="submit" class="btn btn-success mt-2">Add Class</button>
+  </a>
+
+<h1 class="text-center mt-4">List of Class</h1> 
 
 <table class="table mt-4">
     <thead class="table-dark">
