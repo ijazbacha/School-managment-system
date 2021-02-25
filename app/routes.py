@@ -2,7 +2,7 @@ from sqlalchemy.orm import query
 from app import app, db
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin, Student, Teacher, Worker, Class
+from app.models import Admin, Student, Teacher, Worker, LeaveWorker, Class
 
 
 
@@ -90,7 +90,7 @@ def add_class():
         cls_name = request.form['cls_name']
         db.session.add(Class(cls_name=cls_name))
         db.session.commit()
-        flash('Class successfully added!')
+        flash('{} is successfully added'.format(cls_name))
         return redirect(url_for('list_of_class'))
     return render_template('add_class.html')
 
@@ -131,7 +131,7 @@ def add_student():
                         )
         db.session.add(student)
         db.session.commit()
-        flash('Student successfully added')
+        flash('{} is successfully added'.format(std_name))
         return redirect(url_for('add_student'))
 
     return render_template('add_student.html', title='Add Student', classes=classes)
@@ -160,13 +160,81 @@ def add_worker():
         worker = Worker(worker_name=worker_name, worker_address=worker_address, worker_contact=worker_contact, admin=current_user)
         db.session.add(worker)
         db.session.commit()
-        return redirect(url_for('add_worker'))
+        flash('{} is successfully added'.format(worker_name))
+        return redirect(url_for('worker_detials'))
 
-    return render_template('worker.html', title='Worker')
+    return render_template('worker.html', title='Worker', worker=None)
 
 
 @app.route('/worker_detials')
 def worker_detials():
     workers = Worker.query.all()
     return render_template('worker_detials.html', title='Worker Detials', workers=workers)
+
+
+@app.route('/update_worker/<id>', methods=['GET', 'POST'])
+def update_worker(id):
+    worker = Worker.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        worker.worker_name = request.form['worker_name']
+        worker.worker_address = request.form['worker_address']
+        worker.worker_contact = request.form['worker_contact']
+        worker.admin_id = current_user.id
+        db.session.commit()
+        flash('{} is successfully update'.format(worker.worker_name))
+        return redirect(url_for('worker_detials'))
+
+    return render_template('worker.html', title='Worker', worker=worker)
+
+
+
+@app.route('/leave_worker/<id>')
+def leave_worker(id):
+    worker = Worker.query.filter_by(id=id).first()
+    try:
+        if worker:
+            leave_worker_name = worker.worker_name
+            leave_worker_address = worker.worker_address
+            leave_worker_contact = worker.worker_contact
+            admin_id = current_user.id
+            l_worker = LeaveWorker(
+                            leave_worker_name=leave_worker_name,
+                            leave_worker_address=leave_worker_address, 
+                            leave_worker_contact=leave_worker_contact,
+                            admin_id=admin_id)
+            db.session.add(l_worker)
+            db.session.commit()
+            
+            db.session.delete(worker)
+            db.session.commit()
+            flash('{} is successfully leave'.format(worker.worker_name))
+            return redirect(url_for('worker_detials'))
+    except:
+        return redirect(url_for('worker_detials'))
+
+
+@app.route('/leave_worker_detials')
+def leave_worker_detials():
+    leave_worker = LeaveWorker.query.all()
+    return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker)
+
+
+@app.route('/leave_worker_delete/<id>')
+def leave_worker_delete(id):
+    leave_worker = LeaveWorker.query.filter_by(id=id).first()
+    try:
+        if leave_worker:
+            db.session.delete(leave_worker)
+            db.session.commit()
+            flash('Worker {} is premenent delete!'.format(leave_worker.leave_worker_name))
+            return redirect(url_for('leave_worker_detials'))
+    except:
+        return redirect(url_for('leave_worker_detials'))
+
+
+
+
+
+
+
 

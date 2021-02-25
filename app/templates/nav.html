@@ -20,19 +20,19 @@
             </ul>
           </li>
           
-
           
           <li class="nav-item">
             <a class="nav-link " aria-current="page" href="{{ url_for('list_of_class') }}">Classes</a>
           </li>
+
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Worker
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href=" {{ url_for('add_worker') }} ">Add Worker</a></li>
-              <li><a class="dropdown-item" href=" {{ url_for('worker_detials') }} ">Worker Detials</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('worker_detials') }}">Workers</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('leave_worker_detials') }}">Leave Workers</a></li>
             </ul>
           </li>
 
