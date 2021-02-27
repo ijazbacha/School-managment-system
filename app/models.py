@@ -70,6 +70,8 @@ class Teacher(db.Model):
 
 
 class Worker(db.Model):
+    __searchable__ = ['worker_name', 'worker_address']
+    
     id = db.Column(db.Integer, primary_key=True)
     worker_name = db.Column(db.String(64), index=True)
     worker_address = db.Column(db.String(128), index=True)

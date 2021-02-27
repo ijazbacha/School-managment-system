@@ -11,3 +11,5 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=4)
+
+    ENTRY_PER_PAGE = 3

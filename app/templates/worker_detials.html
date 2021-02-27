@@ -9,63 +9,96 @@
     <button type="submit" class="btn btn-success mt-4">Add Worker</button>
   </a>
 
-<h1 class="text-center mt-4">Workers Details</h1>
+  {% if query %}
+  <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
+  {% else %}
+  <h1 class="text-center mt-4">Workers Details</h1>
+  {% endif %}
 
-<table class="table mt-4">
-    <thead class="table-dark">
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Name</th>
-        <th scope="col">Address</th>
-        <th scope="col">Contact</th>
-        <th scope="col">JoinDate</th>
-        <th scope="col">Admin</th>
-        <th scope="col">Update</th>
-        <th scope="col">Leave</th>
-      </tr>
-    </thead>
-    {% for worker in workers %}
-    <tbody>
-      <tr>
-        <td> {{ worker.id }}</td>
-        <td> {{ worker.worker_name }} </td>
-        <td> {{ worker.worker_address }} </td>
-        <td> {{ worker.worker_contact }} </td>
-        <td> {{ worker.join_date.strftime('%Y-%m-%d') }} </td>
-        <td> {{ worker.admin.username }} </td>
-        <td> <a href=" {{ url_for('update_worker', id=worker.id)}} "><button type="submit" class="btn btn-success">Update</button> </a></td>
-        <!-- Button trigger modal -->
-        <td>
-          <button type="button" class="btn btn-danger ms-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Leave
-          </button> 
-        </td>
-      </tr>
-    </tbody>
-        <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-          <h5 class="modal-title text-warning" id="exampleModalLabel"> <b style="color: black;">{{ worker.worker_name }}</b> Do you want to leave!</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <h5 class="card-title"> </h5>
-          </div>
-          <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <a href="{{ url_for('leave_worker', id=worker.id) }}"><button type="button" class="btn btn-danger">Yes</button></a>
-          </div>
+  <form action="" method="GET">
+    <div class="row g-3 align-items-center mt-4">
+      
+      <div class="col-auto">
+        <input type="search" name="query" id="inputPassword6" class="form-control" placeholder="Enter Worker Name" required>
       </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-dark">Search</button>
       </div>
     </div>
+  </form>
+  
+  <table class="table mt-4">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Address</th>
+          <th scope="col">Contact</th>
+          <th scope="col">JoinDate</th>
+          <th scope="col">Admin</th>
+          <th scope="col">Update</th>
+          <th scope="col">Leave</th>
+        </tr>
+      </thead>
+      
+      {% for worker in workers %}
+      
+      
+      <tbody>
+        <tr>
+          <td> {{ worker.id }}</td>
+          <td> {{ worker.worker_name }} </td>
+          <td> {{ worker.worker_address }} </td>
+          <td> {{ worker.worker_contact }} </td>
+          <td> {{ worker.join_date.strftime('%Y-%m-%d') }} </td>
+          <td> {{ worker.admin.username }} </td>
+          <td> <a href=" {{ url_for('update_worker', id=worker.id)}} "><button type="submit" class="btn btn-success">Update</button> </a></td>
+          <!-- Button trigger modal -->
+          <td>
+            <button type="button" class="btn btn-danger ms-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Leave
+            </button> 
+          </td>
+        </tr>
+      </tbody>
+          <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title text-warning" id="exampleModalLabel"> <b style="color: black;">{{ worker.worker_name }}</b> Do you want to leave!</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="card-title"> </h5>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <a href="{{ url_for('leave_worker', id=worker.id) }}"><button type="button" class="btn btn-danger">Yes</button></a>
+            </div>
+        </div>
+        </div>
+      </div>
+      
+      {% endfor %}
+      
+  </table>
 
-    {% endfor %}
-</table>
 
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        {% if prev_url %}
+        <li class="page-item"><a class="page-link" href="{{ prev_url }}">Previous</a></li>
+        {% endif %}
+
+        {% if next_url %}
+        <li class="page-item"><a class="page-link" href="{{ next_url }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
 
 </div>
+
 
 
 {% endblock %}

@@ -1,9 +1,9 @@
 from sqlalchemy.orm import query
 from app import app, db
+from datetime import datetime
 from flask import Flask, render_template, redirect, url_for, request, flash, abort
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Admin, Student, Teacher, Worker, LeaveWorker, Class
-
 
 
 @app.route('/')
@@ -166,10 +166,23 @@ def add_worker():
     return render_template('worker.html', title='Worker', worker=None)
 
 
+
 @app.route('/worker_detials')
 def worker_detials():
-    workers = Worker.query.all()
-    return render_template('worker_detials.html', title='Worker Detials', workers=workers)
+    query = request.args.get('query')
+    if query:
+        workers = Worker.query.filter(Worker.worker_name.contains(query))
+        return render_template('worker_detials.html', title='Search Worker', workers=workers, query=query)
+    
+    page = request.args.get('page', 1, type=int)   
+    workers = Worker.query.order_by(Worker.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('worker_detials', page=workers.next_num) \
+        if workers.has_next else None
+    prev_url = url_for('worker_detials', page=workers.prev_num) \
+        if workers.has_prev else None
+    return render_template('worker_detials.html', title='Worker Detials', workers=workers.items, next_url=next_url, prev_url=prev_url, page=page)
+
 
 
 @app.route('/update_worker/<id>', methods=['GET', 'POST'])
@@ -180,6 +193,7 @@ def update_worker(id):
         worker.worker_address = request.form['worker_address']
         worker.worker_contact = request.form['worker_contact']
         worker.admin_id = current_user.id
+        worker.join_date = datetime.utcnow()
         db.session.commit()
         flash('{} is successfully update'.format(worker.worker_name))
         return redirect(url_for('worker_detials'))
@@ -215,8 +229,20 @@ def leave_worker(id):
 
 @app.route('/leave_worker_detials')
 def leave_worker_detials():
-    leave_worker = LeaveWorker.query.all()
-    return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker)
+    query = request.args.get('query')
+    if query:
+        leave_worker = LeaveWorker.query.filter(LeaveWorker.leave_worker_name.contains(query))
+        return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker, query=query)
+
+    page = request.args.get('page', 1, type=int)
+    leave_worker = LeaveWorker.query.order_by(LeaveWorker.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('leave_worker_detials', page=leave_worker.next_num) \
+        if leave_worker.has_next else None
+    prev_url = url_for('leave_worker_detials', page=leave_worker.prev_num) \
+        if leave_worker.has_prev else None
+    return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker.items, next_url=next_url, prev_url=prev_url)
+
 
 
 @app.route('/leave_worker_delete/<id>')
