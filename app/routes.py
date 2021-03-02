@@ -1,9 +1,14 @@
 from sqlalchemy.orm import query
 from app import app, db
 from datetime import datetime
-from flask import Flask, render_template, redirect, url_for, request, flash, abort
+import pdfkit
+from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Admin, Student, Teacher, Worker, LeaveWorker, Class
+
+#configuration=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+#pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
+
 
 
 @app.route('/')
@@ -134,7 +139,7 @@ def add_student():
         flash('{} is successfully added'.format(std_name))
         return redirect(url_for('add_student'))
 
-    return render_template('add_student.html', title='Add Student', classes=classes)
+    return render_template('add_student.html', title='Add Student', classes=classes, student=None)
 
 
 @app.route('/student_Detials')
@@ -145,8 +150,40 @@ def student_Detials():
 
 @app.route('/student_profile/<id>')
 def student_profile(id):
-    student_profile = Student.query.filter_by(id=id).first()
-    return render_template('student_profile.html', title='Student Profile', student_profile=student_profile)
+    student = Student.query.filter_by(id=id).first()
+    return render_template('student_profile.html', title='Student Profile', student=student)
+
+
+@app.route('/update_student/<id>', methods=['POST', 'GET'])
+def update_student(id):
+    classes = Class.query.all()
+    student = Student.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        student.std_name = request.form['std_name']
+        student.f_name = request.form['f_name']
+        student.std_address = request.form['std_address']
+        student.std_contact = request.form['std_contact']
+        student.std_class = request.form['stdclass']
+        student.admin_id = current_user.id
+        db.session.commit()
+        flash('{} is successfully update!'.format(student.std_name))
+        return redirect(url_for('student_profile', id=student.id))
+    return render_template('add_student.html', title='Update Student', student=student, classes=classes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -233,7 +270,7 @@ def leave_worker_detials():
     if query:
         leave_worker = LeaveWorker.query.filter(LeaveWorker.leave_worker_name.contains(query))
         return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker, query=query)
-
+        
     page = request.args.get('page', 1, type=int)
     leave_worker = LeaveWorker.query.order_by(LeaveWorker.id.asc()).paginate(
         page, app.config['ENTRY_PER_PAGE'], False)
@@ -242,6 +279,17 @@ def leave_worker_detials():
     prev_url = url_for('leave_worker_detials', page=leave_worker.prev_num) \
         if leave_worker.has_prev else None
     return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker.items, next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/leave_worker_pdf', methods=['POST'])
+def leave_worker_pdf():
+    leave_worker = LeaveWorker.query.all()
+    html = render_template("leave_worker_pdf.html", leave_worker=leave_worker)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "inline; filename=output.pdf"
+    return response
 
 
 

@@ -74,6 +74,10 @@
       {% endfor %}
   </table>
 
+  <form action="{{ url_for('leave_worker_pdf') }}" method="POST"> 
+    <button type="submit" class="btn btn-danger">pdf</button>
+  </form>
+
   <nav aria-label="Page navigation example">
     <ul class="pagination">
       {% if prev_url %}

@@ -4,16 +4,18 @@
 {% block content %}
 
 <div class="container mt-4">
-    <h1>Student Profile</h1>
-    <h3><b> Name: </b> {{ student_profile.std_name }} </h3>
-    <p><b> Father Name: </b> {{ student_profile.f_name }} </p>
-    <p><b> Address: </b> {{ student_profile.std_address }} </p>
-    <p><b> Contact: </b> {{ student_profile.std_contact }} </p>
-    <p><b> Class: </b> {{ student_profile.stdclass.cls_name }} </p>
+    <h1> Profile </h1>
+    <h3><b> Name: </b> {{ student.std_name }} </h3>
+    <p><b> Father Name: </b> {{ student.f_name }} </p>
+    <p><b> Address: </b> {{ student.std_address }} </p>
+    <p><b> Contact: </b> {{ student.std_contact }} </p>
+    <p><b> Class: </b> {{ student.stdclass.cls_name }} </p>
+    <p><b> Admission Date: </b> {{ student.join_date.strftime('%Y-%m-%d') }} </p>
     
     
-    <button type="submit" class="btn btn-success">Update</button>
-    <button type="submit" class="btn btn-danger">Leave</button>
+    <a href=" {{ url_for('update_student', id=student.id) }} "><button type="submit" class="btn btn-success">Update</button></a>
+    <a href=" {{ url_for('leave_student', id=student.id) }} "><button type="submit" class="btn btn-danger">Leave</button></a>
+    
     
 </div>
 

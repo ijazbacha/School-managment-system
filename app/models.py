@@ -54,7 +54,6 @@ class Student(db.Model):
 
 
 
-
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tech_name = db.Column(db.String(64), index=True)

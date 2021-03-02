@@ -1,7 +1,11 @@
 import os
+import pdfkit
 from datetime import timedelta
 
+
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-well-never-thing-that'
@@ -13,3 +17,6 @@ class Config(object):
     REMEMBER_COOKIE_DURATION = timedelta(hours=4)
 
     ENTRY_PER_PAGE = 3
+
+    #config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
