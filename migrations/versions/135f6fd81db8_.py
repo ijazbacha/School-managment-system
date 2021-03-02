@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: df2269976aec
+Revision ID: 135f6fd81db8
 Revises: 
-Create Date: 2021-02-25 11:50:09.178476
+Create Date: 2021-03-02 12:38:03.419785
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'df2269976aec'
+revision = '135f6fd81db8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -34,6 +34,23 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_class_cls_name'), 'class', ['cls_name'], unique=False)
+    op.create_table('leave_student',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('std_name', sa.String(length=64), nullable=True),
+    sa.Column('f_name', sa.String(length=64), nullable=True),
+    sa.Column('std_address', sa.String(length=128), nullable=True),
+    sa.Column('std_contact', sa.String(length=64), nullable=True),
+    sa.Column('leave_date', sa.DateTime(), nullable=True),
+    sa.Column('std_class', sa.Integer(), nullable=True),
+    sa.Column('admin_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['admin_id'], ['admin.id'], ),
+    sa.ForeignKeyConstraint(['std_class'], ['class.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_leave_student_f_name'), 'leave_student', ['f_name'], unique=False)
+    op.create_index(op.f('ix_leave_student_std_address'), 'leave_student', ['std_address'], unique=False)
+    op.create_index(op.f('ix_leave_student_std_contact'), 'leave_student', ['std_contact'], unique=False)
+    op.create_index(op.f('ix_leave_student_std_name'), 'leave_student', ['std_name'], unique=False)
     op.create_table('leave_worker',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('leave_worker_name', sa.String(length=64), nullable=True),
@@ -118,6 +135,11 @@ def downgrade():
     op.drop_index(op.f('ix_leave_worker_leave_worker_contact'), table_name='leave_worker')
     op.drop_index(op.f('ix_leave_worker_leave_worker_address'), table_name='leave_worker')
     op.drop_table('leave_worker')
+    op.drop_index(op.f('ix_leave_student_std_name'), table_name='leave_student')
+    op.drop_index(op.f('ix_leave_student_std_contact'), table_name='leave_student')
+    op.drop_index(op.f('ix_leave_student_std_address'), table_name='leave_student')
+    op.drop_index(op.f('ix_leave_student_f_name'), table_name='leave_student')
+    op.drop_table('leave_student')
     op.drop_index(op.f('ix_class_cls_name'), table_name='class')
     op.drop_table('class')
     op.drop_index(op.f('ix_admin_username'), table_name='admin')

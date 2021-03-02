@@ -11,6 +11,7 @@ class Admin(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     student = db.relationship('Student', backref='admin')
+    leavestudent = db.relationship('LeaveStudent', backref='admin')
     teacher = db.relationship('Teacher', backref='admin')
     worker = db.relationship('Worker', backref='admin')
     leaveworker = db.relationship('LeaveWorker', backref='admin')
@@ -34,6 +35,7 @@ class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cls_name = db.Column(db.String(64), index=True)
     student = db.relationship('Student', backref='stdclass')
+    leavestudent = db.relationship('LeaveStudent', backref='stdclass')
 
     def __repr__(self):
         return 'Class {}'.format(self.cls_name)
@@ -52,6 +54,18 @@ class Student(db.Model):
     def __repr__(self):
         return 'Student {}'.format(self.std_name)
 
+class LeaveStudent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    std_name = db.Column(db.String(64), index=True)
+    f_name = db.Column(db.String(64), index=True)
+    std_address = db.Column(db.String(128), index=True)
+    std_contact = db.Column(db.String(64), index=True)
+    leave_date = db.Column(db.DateTime, default=datetime.utcnow())
+    std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+
+    def __repr__(self):
+        return 'Leave Student {}'.format(self.std_name)
 
 
 class Teacher(db.Model):

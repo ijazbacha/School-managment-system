@@ -28,7 +28,10 @@
             {% for class in classes %}
             {% if student %}
             <option selected value="{{ class.id }}">{{ class }}</option>
+            {% else %}
+            <option value="{{ class.id }}">{{ class }}</option>
             {% endif %}
+
             {% endfor %}
           </select>
     </div>

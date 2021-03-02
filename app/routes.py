@@ -4,9 +4,9 @@ from datetime import datetime
 import pdfkit
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin, Student, Teacher, Worker, LeaveWorker, Class
+from app.models import Admin, Student,LeaveStudent, Teacher, Worker, LeaveWorker, Class
 
-#configuration=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+configuration=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
 
 
@@ -171,11 +171,49 @@ def update_student(id):
     return render_template('add_student.html', title='Update Student', student=student, classes=classes)
 
 
+@app.route('/leave_student/<id>')
+def leave_student(id):
+    student = Student.query.filter_by(id=id).first()
+
+    std_name = student.std_name
+    f_name = student.f_name
+    std_address = student.std_address
+    std_contact = student.std_contact
+    leave_date = student.join_date
+    std_class = student.stdclass.id
+    admin_id = current_user.id
+    l_student = LeaveStudent(
+        std_name=std_name,
+        f_name=f_name,
+        std_address=std_address,
+        std_contact=std_contact,
+        leave_date=leave_date,
+        std_class=std_class,
+        admin_id=admin_id
+    )
+    db.session.add(l_student)
+    db.session.delete(student)
+    db.session.commit()
+    flash('{} is successfully leave!'.format(std_name))
+    return redirect(url_for('student_Detials'))
 
 
+@app.route('/leave_student_detials')
+def leave_student_detials():
+    students = LeaveStudent.query.all()
+    return render_template('leave_student_detials.html', title='Leave Students Detials', students=students)
 
 
-
+@app.route('/leave_student_delete/<id>')
+def leave_student_delete(id):
+    try:
+        student = LeaveStudent.query.filter_by(id=id).first()
+        db.session.delete(student)
+        db.session.commit()
+        flash('{} is successfully delete!'.format(student.std_name))
+        return redirect(url_for('leave_student_detials'))
+    except:
+        pass
 
 
 
