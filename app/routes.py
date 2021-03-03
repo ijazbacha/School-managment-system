@@ -97,7 +97,7 @@ def add_class():
         db.session.commit()
         flash('{} is successfully added'.format(cls_name))
         return redirect(url_for('list_of_class'))
-    return render_template('add_class.html')
+    return render_template('add_class.html', title='Add New Class', u_class=None)
 
 
 @app.route('/list_of_class')
@@ -106,11 +106,45 @@ def list_of_class():
     return render_template('list_of_class.html', classes=classes)
 
 
+@app.route('/update_class/<id>', methods=["GET", "POST"])
+def update_class(id):
+    u_class = Class.query.filter_by(id=id).first()
+    if request.method == "POST":
+        cls_name = request.form['cls_name']
+        u_class.cls_name = cls_name
+        db.session.commit()
+        flash('{} is successfully update!'.format(u_class.cls_name))
+        return redirect(url_for('list_of_class'))
+    return render_template('add_class.html', title='Update Class', u_class=u_class)
+
+
+
+@app.route('/delete_class/<id>')
+def delete_class(id):
+    try:
+        d_class = Class.query.filter_by(id=id).first()
+        db.session.delete(d_class)
+        db.session.commit()
+        flash('{} is successfully delete!'.format(d_class.cls_name))
+        return redirect(url_for('list_of_class'))
+    except:
+        pass
+
+
+
+
+
 @app.route('/class_wise_student/<std_class>')
 def class_wise_student(std_class):
+    page = request.args.get('page', 1, type=int)
     class_name = Class.query.filter_by(id=std_class).first()
-    students = Student.query.filter_by(std_class=std_class).all()
-    return render_template('class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students)
+    students = Student.query.filter_by(std_class=std_class).order_by(Student.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('class_wise_student', std_class=std_class, page=students.next_num) \
+        if students.has_next else None
+    prev_url = url_for('class_wise_student', std_class=std_class, page=students.prev_num) \
+        if students.has_prev else None
+    return render_template('class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 
@@ -144,8 +178,14 @@ def add_student():
 
 @app.route('/student_Detials')
 def student_Detials():
-    students = Student.query.all()
-    return render_template('student_Detials.html', title='Student Detials', students=students)
+    page = request.args.get('page', 1, type=int)
+    students = Student.query.order_by(Student.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('student_Detials', page=students.next_num) \
+        if students.has_next else None
+    prev_url = url_for('student_Detials', page=students.prev_num) \
+        if students.has_prev else None
+    return render_template('student_Detials.html', title='Student Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/student_profile/<id>')
@@ -200,8 +240,14 @@ def leave_student(id):
 
 @app.route('/leave_student_detials')
 def leave_student_detials():
-    students = LeaveStudent.query.all()
-    return render_template('leave_student_detials.html', title='Leave Students Detials', students=students)
+    page = request.args.get('page', 1, type=int)
+    students = LeaveStudent.query.order_by(LeaveStudent.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('leave_student_detials', page=students.next_num) \
+        if students.has_next else None
+    prev_url = url_for('leave_student_detials', page=students.prev_num) \
+        if students.has_prev else None
+    return render_template('leave_student_detials.html', title='Leave Students Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/leave_student_delete/<id>')
@@ -214,14 +260,6 @@ def leave_student_delete(id):
         return redirect(url_for('leave_student_detials'))
     except:
         pass
-
-
-
-
-
-
-
-
 
 
 

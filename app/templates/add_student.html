@@ -26,12 +26,7 @@
         <select class="form-select" name="stdclass"  aria-label="Default select example">
             <option selected>Open this select class</option>
             {% for class in classes %}
-            {% if student %}
-            <option selected value="{{ class.id }}">{{ class }}</option>
-            {% else %}
             <option value="{{ class.id }}">{{ class }}</option>
-            {% endif %}
-
             {% endfor %}
           </select>
     </div>
