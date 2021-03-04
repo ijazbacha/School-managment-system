@@ -132,10 +132,14 @@ def delete_class(id):
 
 
 
-
-
 @app.route('/class_wise_student/<std_class>')
 def class_wise_student(std_class):
+    query = request.args.get('query')
+    if query:
+        students = Student.query.filter(Student.std_name.contains(query)|
+                                        Student.f_name.contains(query))
+        return render_template('class_wise_student.html', title='Class Wise Student', query=query, students=students)
+
     page = request.args.get('page', 1, type=int)
     class_name = Class.query.filter_by(id=std_class).first()
     students = Student.query.filter_by(std_class=std_class).order_by(Student.id.asc()).paginate(
@@ -176,8 +180,14 @@ def add_student():
     return render_template('add_student.html', title='Add Student', classes=classes, student=None)
 
 
-@app.route('/student_Detials')
+@app.route('/student_Detials', methods=['GET', 'POST'])
 def student_Detials():
+    query = request.args.get('query')
+    if query:
+        students = Student.query.filter(Student.std_name.contains(query)|
+                                        Student.f_name.contains(query))
+        return render_template('student_Detials.html', title='Student Detials', students=students, query=query)
+        
     page = request.args.get('page', 1, type=int)
     students = Student.query.order_by(Student.id.asc()).paginate(
         page, app.config['ENTRY_PER_PAGE'], False)
@@ -214,7 +224,6 @@ def update_student(id):
 @app.route('/leave_student/<id>')
 def leave_student(id):
     student = Student.query.filter_by(id=id).first()
-
     std_name = student.std_name
     f_name = student.f_name
     std_address = student.std_address
@@ -240,6 +249,11 @@ def leave_student(id):
 
 @app.route('/leave_student_detials')
 def leave_student_detials():
+    query = request.args.get('query')
+    if query:
+        students = LeaveStudent.query.filter(LeaveStudent.std_name.contains(query)|
+                                        LeaveStudent.f_name.contains(query))
+        return render_template('leave_student_detials.html', title='Leave Students Detials', students=students, query=query)
     page = request.args.get('page', 1, type=int)
     students = LeaveStudent.query.order_by(LeaveStudent.id.asc()).paginate(
         page, app.config['ENTRY_PER_PAGE'], False)
@@ -260,6 +274,20 @@ def leave_student_delete(id):
         return redirect(url_for('leave_student_detials'))
     except:
         pass
+
+
+@app.route('/list_of_subject')
+def list_of_subject():
+    pass
+
+
+
+
+
+
+
+
+
 
 
 

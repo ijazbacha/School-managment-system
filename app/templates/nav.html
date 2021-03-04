@@ -22,8 +22,15 @@
           </li>
           
           
-          <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="{{ url_for('list_of_class') }}">Classes</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Teacher
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Add Teacher</a></li>
+              <li><a class="dropdown-item" href="#">Teacher Detials</a></li>
+              <li><a class="dropdown-item" href="#">Leave Teacher</a></li>
+            </ul>
           </li>
 
 
@@ -37,30 +44,20 @@
             </ul>
           </li>
 
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
           <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" >Disabled</a>
+            <a class="nav-link " aria-current="page" href="{{ url_for('list_of_class') }}">Classes</a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="{{ url_for('list_of_subject') }}">Subjects</a>
+          </li>
+          
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+        
         {% if current_user.is_anonymous %}
         <a href="{{ url_for('admin_login') }}"><button class="btn btn-success ms-2">Admin</button></a>
         {% else %}
-        <a href="{{ url_for('admin_logout') }}"><button class="btn btn-success ms-2">LogOut</button></a>
+        <a href="{{ url_for('admin_logout') }}"><button class="btn btn-success ms-2">Logout</button></a>
         {% endif %}
       </div>
     </div>

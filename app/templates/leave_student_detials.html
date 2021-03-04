@@ -4,7 +4,24 @@
 {% block content %}
 
 <div class="container">
-<h1 class="text-center mt-4"> Leave Students Details</h1>
+
+
+  {% if query %}
+  <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
+  {% else %}
+  <h1 class="text-center mt-4"> Leave Students Details</h1>
+  {% endif %}
+
+  <form action="" method="GET">
+    <div class="row g-3 align-items-center mt-4">
+      <div class="col-auto">
+        <input type="search" name="query" id="inputPassword6" value="{{query}}" class="form-control" placeholder="Enter Student or Father Name" required>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-dark">Search</button>
+      </div>
+    </div>
+  </form>
 
 <table class="table mt-4">
     <thead class="table-dark">
@@ -73,7 +90,7 @@
   </nav>
 
 
-  <p> {{ students|length }} </p>
+  
 </div>
     
 

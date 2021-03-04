@@ -5,19 +5,20 @@
 
 <div class="container mt-4">
     <h1> Profile </h1>
-    <h3><b> Name: </b> {{ student.std_name }} </h3>
-    <p><b> Father Name: </b> {{ student.f_name }} </p>
-    <p><b> Address: </b> {{ student.std_address }} </p>
-    <p><b> Contact: </b> {{ student.std_contact }} </p>
-    <p><b> Class: </b> {{ student.stdclass.cls_name }} </p>
-    <p><b> Admission Date: </b> {{ student.join_date.strftime('%Y-%m-%d') }} </p>
+    <hr>
+    <h3><b> Name: </b> <span style="float: right;">{{ student.std_name }}</span></h3>
+    <p><b> Father Name: </b><span style="float: right; text-align: justify;"> {{ student.f_name }} </span></p>
+    <p><b> Address: </b> <span style="float: right;">{{ student.std_address }} </span></p>
+    <p><b> Contact: </b> <span style="float: right;">{{ student.std_contact }} </span></p>
+    <p><b> Class: </b> <span style="float: right;">{{ student.stdclass.cls_name }}</span> </p>
+    <p><b> Admission Date: </b> <span style="float: right;">{{ student.join_date.strftime('%Y-%m-%d') }} </span></p>
     
     
     <a href=" {{ url_for('update_student', id=student.id) }} "><button type="submit" class="btn btn-success">Update</button></a>
     
     <!-- Button trigger modal -->
     
-    <button type="button" class="btn btn-danger ms-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <button type="button" class="btn btn-danger ms-4" style="float: right;" data-bs-toggle="modal" data-bs-target="#exampleModal">
           Leave
     </button>
 
