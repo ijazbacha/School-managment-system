@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+<h1 class="mt-4">Add Subject</h1>
+
+<form method="POST">
+    <div class="mb-3">
+      <label for="Inputname" class="form-label">Subject Name:</label>
+      <input type="text" class="form-control" name="sub_name" value="{{subjects.sub_name}}"  id="Inputname" placeholder="Enter subject name" required>
+    </div>
+    <button type="submit" class="btn btn-success">Add</button>
+</form>
+
+
+</div>
+
+{% endblock %}

@@ -4,7 +4,7 @@ from datetime import datetime
 import pdfkit
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin, Student,LeaveStudent, Teacher, Worker, LeaveWorker, Class
+from app.models import Admin, Student,LeaveStudent, Subject, Teacher, Worker, LeaveWorker, Class
 
 configuration=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
@@ -276,10 +276,35 @@ def leave_student_delete(id):
         pass
 
 
-@app.route('/list_of_subject')
-def list_of_subject():
-    pass
+@app.route('/add_subject', methods=['POST', 'GET'])
+def add_subject():
+    if request.method == 'POST':
+        sub_name = request.form['sub_name']
+        admin_id = current_user.id
+        subject = Subject(sub_name=sub_name, admin_id=admin_id)
+        db.session.add(subject)
+        db.session.commit()
+        flash('{} subject is successfully added!'.format(sub_name))
+        return redirect(url_for('list_of_subject'))
+    return render_template('add_subject.html', title='Add Subject', subjects=None)
 
+
+@app.route('/list_of_subject/')
+def list_of_subject():
+    subjects = Subject.query.all()
+    return render_template('list_of_subject.html', title='Subject', subjects=subjects)
+
+
+@app.route('/update_subject/<id>', methods=['GET', 'POST'])
+def update_subject(id):
+    subjects = Subject.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        subjects.sub_name = request.form['sub_name']
+        subjects.admin_id = current_user.id
+        db.session.commit()
+        flash('{} subject is successfully added!'.format(subjects.sub_name))
+        return redirect(url_for('list_of_subject'))
+    return render_template('add_subject.html', title='Add Subject', subjects=subjects)
 
 
 
