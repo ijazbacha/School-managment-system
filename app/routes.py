@@ -308,8 +308,47 @@ def update_subject(id):
 
 
 
+@app.route('/delete_subject/<id>')
+def delete_subject(id):
+    subject = Subject.query.filter_by(id=id).first()
+    if subject:
+        db.session.delete(subject)
+        db.session.commit()
+        flash('{} subject is successfully added!'.format(subject.sub_name))
+        return redirect(url_for('list_of_subject'))
 
 
+@app.route('/add_teacher', methods=['GET', 'POST'])
+def add_teacher():
+    subjects = Subject.query.all()
+    if request.method == 'POST':
+        tech_name = request.form['tech_name']
+        email = request.form['email']
+        tech_address = request.form['tech_address']
+        tech_contact = request.form['tech_contact']
+        admin_id = current_user.id
+        tech_subject = request.form['sub']
+        #tech_subject = Subject.query.filter_by(id=tech_subject.id).first()
+        teacher = Teacher(
+            tech_name=tech_name, 
+            email=email, 
+            tech_address=tech_address,
+            tech_contact=tech_contact,
+            admin_id=admin_id,
+            tech_subject=tech_subject
+            )
+        db.session.add(teacher)
+        db.session.commit()
+        flash('{} teacher is successfully added!')
+        return redirect(url_for('index'))
+
+    return render_template('add_teacher.html', title='Add Teacher', subjects=subjects)
+
+
+@app.route('/teacher_detials')
+def teacher_detials():
+    teachers = Teacher.query.all()
+    return render_template('teacher_detials.html', title='Teachers', teachers=teachers)
 
 
 
