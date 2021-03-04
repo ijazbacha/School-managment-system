@@ -351,6 +351,10 @@ def teacher_detials():
     return render_template('teacher_detials.html', title='Teachers', teachers=teachers)
 
 
+@app.route('/teacher_profile/<id>')
+def teacher_profile(id):
+    teacher = Teacher.query.filter_by(id=id).first()
+    return render_template('teacher_profile.html', title='Teacher Profile', teacher=teacher)
 
 
 

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container mt-4">
+    <h1> Profile </h1>
+    <hr>
+    <h3><b> Name: </b> <span style="float: right;">{{ teacher.tech_name }}</span></h3>
+    <p><b> Email: </b><span style="float: right; text-align: justify;"> {{ teacher.email }} </span></p>
+    <p><b> Address: </b> <span style="float: right;">{{ teacher.tech_address }} </span></p>
+    <p><b> Contact: </b> <span style="float: right;">{{ teacher.tech_contact }} </span></p>
+    <p><b> Subject: </b> <span style="float: right;">{{ teacher.sub.sub_name }}</span> </p>
+    <p><b> Join Date: </b> <span style="float: right;">{{ teacher.join_date.strftime('%Y-%m-%d') }} </span></p>
+    
+    
+    <a href=""><button type="submit" class="btn btn-success">Update</button></a>
+    
+    <!-- Button trigger modal -->
+    
+    <button type="button" class="btn btn-danger ms-4" style="float: right;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Leave
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title text-warning" id="exampleModalLabel">  Do you want to remove! <b style="color: black;"></b></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="card-title"> </h5>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <a href=""><button type="button" class="btn btn-danger">Yes</button></a>
+            </div>
+        </div>
+        </div>
+      </div>
+    
+</div>
+
+
+{% endblock %}
