@@ -13,6 +13,7 @@ class Admin(UserMixin, db.Model):
     student = db.relationship('Student', backref='admin')
     leavestudent = db.relationship('LeaveStudent', backref='admin')
     teacher = db.relationship('Teacher', backref='admin')
+    leaveteacher = db.relationship('LeaveTeacher', backref='admin')
     worker = db.relationship('Worker', backref='admin')
     leaveworker = db.relationship('LeaveWorker', backref='admin')
     classs = db.relationship('Class', backref='admin')
@@ -75,6 +76,7 @@ class Subject(db.Model):
     sub_name = db.Column(db.String(64))
     admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
     teacher = db.relationship('Teacher', backref='sub')
+    leaveteacher = db.relationship('LeaveTeacher', backref='sub')
 
     def __repr__(self):
         return 'Subject {}'.format(self.sub_name)
@@ -92,6 +94,20 @@ class Teacher(db.Model):
 
     def __repr__(self):
         return 'Teacher {}'.format(self.tech_name)
+
+
+class LeaveTeacher(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tech_name = db.Column(db.String(64), index=True)
+    email = db.Column(db.String(64), index=True)
+    tech_address = db.Column(db.String(128), index=True)
+    tech_contact = db.Column(db.String(64), index=True)
+    leave_date = db.Column(db.DateTime, default=datetime.utcnow())
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
+
+    def __repr__(self):
+        return 'LeaveTeacher {}'.format(self.tech_name)
 
 
 class Worker(db.Model):

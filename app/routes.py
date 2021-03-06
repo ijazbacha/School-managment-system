@@ -4,9 +4,9 @@ from datetime import datetime
 import pdfkit
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin, Student,LeaveStudent, Subject, Teacher, Worker, LeaveWorker, Class
+from app.models import Admin, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, Worker, LeaveWorker, Class
 
-configuration=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+#config=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
 
 
@@ -327,7 +327,7 @@ def add_teacher():
         tech_address = request.form['tech_address']
         tech_contact = request.form['tech_contact']
         admin_id = current_user.id
-        tech_subject = request.form['sub']
+        tech_subject = request.form['tech_subject']
         #tech_subject = Subject.query.filter_by(id=tech_subject.id).first()
         teacher = Teacher(
             tech_name=tech_name, 
@@ -342,7 +342,7 @@ def add_teacher():
         flash('{} teacher is successfully added!')
         return redirect(url_for('index'))
 
-    return render_template('add_teacher.html', title='Add Teacher', subjects=subjects)
+    return render_template('add_teacher.html', title='Add Teacher', subjects=subjects, teacher=None)
 
 
 @app.route('/teacher_detials')
@@ -356,6 +356,54 @@ def teacher_profile(id):
     teacher = Teacher.query.filter_by(id=id).first()
     return render_template('teacher_profile.html', title='Teacher Profile', teacher=teacher)
 
+
+@app.route('/update_teacher/<id>', methods=['GET', 'POST'])
+def update_teacher(id):
+    subjects = Subject.query.all()
+    teacher = Teacher.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        teacher.tech_name = request.form['tech_name']
+        teacher.email = request.form['email']
+        teacher.tech_address = request.form['tech_address']
+        teacher.tech_contact = request.form['tech_contact']
+        teacher.admin_id = current_user.id
+        tech_subject =  request.form['tech_subject']
+
+        if tech_subject == 'Open this select subject':
+            flash('Please etner subject!')
+            return redirect(url_for('update_teacher', id=teacher.id))
+
+        teacher.tech_subject = tech_subject
+        db.session.commit()
+        flash('Teacher {} successfully update!'.format(teacher.tech_name))
+        return redirect(url_for('teacher_profile', id=teacher.id))
+    return render_template('add_teacher.html', title='Update Teacher', teacher=teacher, subjects=subjects)
+
+
+@app.route('/leave_teacher/<id>')
+def leave_teacher(id):
+    teacher = Teacher.query.filter_by(id=id).first()
+    if teacher:
+        tech_name = teacher.tech_name
+        email = teacher.email
+        tech_address = teacher.tech_address
+        tech_contact = teacher.tech_contact
+        admin_id = current_user.id
+        tech_subject = teacher.tech_subject
+        l_teacher = LeaveTeacher(
+            tech_name=tech_name,
+            email=email,
+            tech_address=tech_address,
+            tech_contact=tech_contact,
+            admin_id=admin_id,
+            tech_subject=tech_subject
+            )
+        db.session.add(l_teacher)
+        db.session.delete(teacher)
+        db.session.commit()
+        flash('Teacher {} successfully leave!'.format(tech_name))
+        return redirect(url_for('teacher_detials'))
+    
 
 
 

@@ -8,23 +8,23 @@
 <form method="POST">
     <div class="mb-3">
       <label for="Inputname" class="form-label">Name:</label>
-      <input type="text" class="form-control" name="tech_name" value="" id="Inputname" placeholder="Enter name" required>
+      <input type="text" class="form-control" name="tech_name" value="{{teacher.tech_name}}" id="Inputname" placeholder="Enter name" required>
     </div>
     <div class="mb-3">
         <label for="Inputname" class="form-label">Email:</label>
-        <input type="email" class="form-control" name="email" value="" id="Inputname" placeholder="Enter email" required>
+        <input type="email" class="form-control" name="email" value="{{teacher.email}}" id="Inputname" placeholder="Enter email" required>
     </div>
     <div class="mb-3">
         <label for="Inputaddress" class="form-label">Address:</label>
-        <input type="text" class="form-control" name="tech_address" value="" id="Inputaddress" placeholder="Enter address" required>
+        <input type="text" class="form-control" name="tech_address" value="{{teacher.tech_address}}" id="Inputaddress" placeholder="Enter address" required>
     </div>
     <div class="mb-3">
         <label for="Inputcontact" class="form-label">Contact:</label>
-        <input type="tel" class="form-control" name="tech_contact" value="" id="Inputcontact" placeholder="Enter contact" required>
+        <input type="tel" class="form-control" name="tech_contact" value="{{teacher.tech_contact}}" id="Inputcontact" placeholder="Enter contact" required>
     </div>
     <div class="mb-3">
-        <select class="form-select" name="sub"  aria-label="Default select example">
-            <option selected>Open this select class</option>
+        <select class="form-select" name="tech_subject"  aria-label="Default select example">
+            <option selected>Open this select subject</option>
             {% for subject in subjects %}
             <option value="{{ subject.id }}">{{ subject }}</option>
             {% endfor %}
