@@ -2,6 +2,7 @@ from sqlalchemy.orm import query
 from app import app, db
 from datetime import datetime
 import pdfkit
+import random
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Admin, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, Worker, LeaveWorker, Class
@@ -202,10 +203,32 @@ def student_Detials():
     return render_template('student_Detials.html', title='Student Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
+@app.route('/student_detials_pdf')
+def student_detials_pdf():
+    students = Teacher.query.all()
+    html = render_template("student_detials_pdf.html", students=students)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
+
+
 @app.route('/student_profile/<id>')
 def student_profile(id):
     student = Student.query.filter_by(id=id).first()
     return render_template('student_profile.html', title='Student Profile', student=student)
+
+
+@app.route('/student_profile_pdf/<id>')
+def student_profile_pdf(id):
+    students = Teacher.query.filter_by(id=id).first()
+    html = render_template("student_profile_pdf.html", student=students)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
 
 
 @app.route('/update_student/<id>', methods=['POST', 'GET'])
@@ -273,6 +296,17 @@ def leave_student_detials():
     prev_url = url_for('leave_student_detials', page=students.prev_num) \
         if students.has_prev else None
     return render_template('leave_student_detials.html', title='Leave Students Detials', students=students.items, next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/leave_student_pdf')
+def leave_student_pdf():
+    students = Teacher.query.all()
+    html = render_template("leave_student_pdf.html", students=students)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
 
 
 @app.route('/leave_student_delete/<id>')
@@ -366,8 +400,7 @@ def teacher_detials():
         teachers = Teacher.query.filter(Teacher.tech_name.contains(query))
         return render_template('teacher_detials.html', title='Teachers', teachers=teachers, query=query)
     
-    page = request.args.get('page', 1, type=int)
-       
+    page = request.args.get('page', 1, type=int)  
     teachers = Teacher.query.order_by(Teacher.id.asc()).paginate(
         page, app.config['ENTRY_PER_PAGE'], False)
     next_url = url_for('teacher_detials', page=teachers.next_num) \
@@ -377,10 +410,34 @@ def teacher_detials():
     return render_template('teacher_detials.html', title='Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
+@app.route('/teacher_detials_pdf')
+def teacher_detials_pdf():
+    teachers = Teacher.query.all()
+    html = render_template("teacher_detials_pdf.html", teachers=teachers)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
+
+
 @app.route('/teacher_profile/<id>')
 def teacher_profile(id):
     teacher = Teacher.query.filter_by(id=id).first()
     return render_template('teacher_profile.html', title='Teacher Profile', teacher=teacher)
+
+
+@app.route('/teacher_profile_pdf/<id>')
+def teacher_profile_pdf(id):
+    teachers = Teacher.query.filter_by(id=id).first()
+    html = render_template("teacher_profile_pdf.html", teacher=teachers)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
+
+
 
 
 @app.route('/update_teacher/<id>', methods=['GET', 'POST'])
@@ -449,6 +506,17 @@ def leave_teacher_detials():
     return render_template('leave_teacher_detials.html', title='Leave Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
+@app.route('/leave_teacher_pdf')
+def leave_teacher_pdf():
+    teachers = LeaveTeacher.query.all()
+    html = render_template("leave_teacher_pdf.html", teachers=teachers)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
+
+
 @app.route('/leave_teacher_delete/<id>')
 def leave_teacher_delete(id):
     teacher = LeaveTeacher.query.filter_by(id=id).first()
@@ -492,6 +560,16 @@ def worker_detials():
         if workers.has_prev else None
     return render_template('worker_detials.html', title='Worker Detials', workers=workers.items, next_url=next_url, prev_url=prev_url, page=page)
 
+
+@app.route('/worker_detials_pdf')
+def worker_detials_pdf():
+    workers = Worker.query.all()
+    html = render_template("worker_detials_pdf.html", workers=workers)
+    pdf = pdfkit.from_string(html, False)
+    response = make_response(pdf)
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
+    return response
 
 
 @app.route('/update_worker/<id>', methods=['GET', 'POST'])
@@ -559,8 +637,8 @@ def leave_worker_pdf():
     html = render_template("leave_worker_pdf.html", leave_worker=leave_worker)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
-    response.headers["Content-Type"] = "application/pdf"
-    response.headers["Content-Disposition"] = "inline; filename=output.pdf"
+    response.headers["content-Type"] = "application/pdf"
+    response.headers["content-Disposition"] = "inline: filename=output.pdf"
     return response
 
 

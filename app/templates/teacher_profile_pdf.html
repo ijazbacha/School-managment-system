@@ -12,34 +12,17 @@
   </head>
   <body>
     <div class="container">
-
-  
-      <h1 class="text-center mt-4">Leave Workers Details</h1>
-    
-      <table class="table mt-4">
-          <thead class="table-dark">
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Name</th>
-              <th scope="col">Address</th>
-              <th scope="col">Contact</th>
-              <th scope="col">LeaveDate</th>
-              <th scope="col">Admin</th>
-            </tr>
-          </thead>
-          {% for worker in leave_worker %}
-          <tbody>
-            <tr>
-              <td> {{ worker.id }}</td>
-              <td> {{ worker.leave_worker_name }} </td>
-              <td> {{ worker.leave_worker_address }} </td>
-              <td> {{ worker.leave_worker_contact }} </td>
-              <td> {{ worker.leave_date.strftime('%Y-%m-%d') }} </td>
-              <td> {{ worker.admin.username }} </td>
-            </tr>
-          </tbody>
-          {% endfor %}
-      </table>
+        
+        
+            <h1> Profile </h1>
+            <hr>
+            <h3><b> Name: </b> <span style="float: right;">{{ teacher.tech_name }}</span></h3>
+            <p><b> Email: </b><span style="float: right; text-align: justify;"> {{ teacher.email }} </span></p>
+            <p><b> Address: </b> <span style="float: right;">{{ teacher.tech_address }} </span></p>
+            <p><b> Contact: </b> <span style="float: right;">{{ teacher.tech_contact }} </span></p>
+            <p><b> Subject: </b> <span style="float: right;">{{ teacher.sub.sub_name }}</span> </p>
+            <p><b> Join Date: </b> <span style="float: right;">{{ teacher.join_date.strftime('%Y-%m-%d') }} </span></p>
+            
     
     </div>
 

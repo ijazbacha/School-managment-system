@@ -134,3 +134,6 @@ class LeaveWorker(db.Model):
 
     def __repr__(self):
         return 'Leave Worker {}'.format(self.leave_worker_name)
+
+
+    

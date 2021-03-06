@@ -14,28 +14,32 @@
     <div class="container">
 
   
-      <h1 class="text-center mt-4">Leave Workers Details</h1>
+      <h1 class="text-center mt-4">Teacher Details</h1>
     
       <table class="table mt-4">
           <thead class="table-dark">
             <tr>
               <th scope="col">Id</th>
               <th scope="col">Name</th>
+              <th scope="col">Email</th>
               <th scope="col">Address</th>
               <th scope="col">Contact</th>
               <th scope="col">LeaveDate</th>
+              <th scope="col">Subject</th>
               <th scope="col">Admin</th>
             </tr>
           </thead>
-          {% for worker in leave_worker %}
+          {% for teacher in teachers %}
           <tbody>
             <tr>
-              <td> {{ worker.id }}</td>
-              <td> {{ worker.leave_worker_name }} </td>
-              <td> {{ worker.leave_worker_address }} </td>
-              <td> {{ worker.leave_worker_contact }} </td>
-              <td> {{ worker.leave_date.strftime('%Y-%m-%d') }} </td>
-              <td> {{ worker.admin.username }} </td>
+              <td> {{ teacher.id }}</td>
+              <td> {{ teacher.tech_name }} </td>
+              <td> {{ teacher.email }} </td>
+              <td> {{ teacher.tech_address }} </td>
+              <td> {{ teacher.tech_contact }} </td>
+              <td> {{ teacher.leave_date.strftime('%Y-%m-%d') }} </td>
+              <td> {{ teacher.sub.sub_name }} </td>
+              <td> {{ teacher.admin.username }} </td>
             </tr>
           </tbody>
           {% endfor %}
