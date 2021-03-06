@@ -431,6 +431,32 @@ def leave_teacher(id):
         return redirect(url_for('teacher_detials'))
     
 
+@app.route('/leave_teacher_detials')
+def leave_teacher_detials():
+    query = request.args.get('query')
+    if query:
+        teachers = LeaveTeacher.query.filter(LeaveTeacher.tech_name.contains(query))
+        return render_template('leave_teacher_detials.html', title='Leave Teachers', teachers=teachers, query=query)
+    
+    page = request.args.get('page', 1, type=int)
+       
+    teachers = LeaveTeacher.query.order_by(LeaveTeacher.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('leave_teacher_detials', page=teachers.next_num) \
+        if teachers.has_next else None
+    prev_url = url_for('leave_teacher_detials', page=teachers.prev_num) \
+        if teachers.has_prev else None
+    return render_template('leave_teacher_detials.html', title='Leave Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
+
+
+@app.route('/leave_teacher_delete/<id>')
+def leave_teacher_delete(id):
+    teacher = LeaveTeacher.query.filter_by(id=id).first()
+    if teacher:
+        db.session.delete(teacher)
+        db.session.commit()
+        flash('Teacher {} is successfully delete!'.format(teacher.tech_name))
+        return redirect(url_for('leave_teacher_detials'))
 
 
 @app.route('/add_worker', methods=['GET', 'POST'])

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+
+  {% if query %}
+  <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
+  {% else %}
+  <h1 class="text-center mt-4">Leave Teachers Details</h1>
+  {% endif %}
+  
+
+  <form action="" method="GET">
+    <div class="row g-3 align-items-center mt-4">
+      <div class="col-auto">
+        <input type="search" name="query" id="inputPassword6" class="form-control" placeholder="Enter Teacher Name" required>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-dark">Search</button>
+      </div>
+    </div>
+  </form>
+
+
+  <table class="table mt-4">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Email</th>
+          <th scope="col">Address</th>
+          <th scope="col">Contact</th>
+          <th scope="col">Subject</th>
+          <th scope="col">LeaveDate</th>
+          <th scope="col">Admin</th>
+          <th scope="col">Permanent Delete</th>
+        </tr>
+      </thead>
+      {% for teacher in teachers %}
+      <tbody>
+        <tr>
+          <td> {{ teacher.id }}</td>
+          <td> {{ teacher.tech_name }} </td>
+          <td> {{ teacher.email }} </td>
+          <td> {{ teacher.tech_address }} </td>
+          <td> {{ teacher.tech_contact }} </td>
+          <td> {{ teacher.sub.sub_name }} </td>
+          <td> {{ teacher.leave_date.strftime('%Y-%m-%d') }} </td>
+          <td> {{ teacher.admin.username }} </td>
+          <td> 
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-danger ms-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                  Delete
+              </button> 
+          </td>
+        </tr>
+      </tbody>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">  Do you want to Delete!</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <h5 class="card-title text-warning"> Worker<b style="color: black;"> {{ teacher.tech_name }}</b></h5>
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <a href="{{ url_for('leave_teacher_delete', id=teacher.id) }}"><button type="button" class="btn btn-danger">Yes</button></a>
+              </div>
+          </div>
+          </div>
+        </div>
+      {% endfor %}
+  </table>
+
+  
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      {% if prev_url %}
+      <li class="page-item"><a class="page-link" href="{{ prev_url }}">Previous</a></li>
+      {% endif %}
+
+      {% if next_url %}
+      <li class="page-item"><a class="page-link" href="{{ next_url }}">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+</div>
+
+
+{% endblock %}
