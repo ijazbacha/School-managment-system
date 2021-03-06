@@ -8,6 +8,7 @@
 
   {% if query %}
   <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
+  <td> <a href=" {{ url_for('student_Detials') }} "> <button type="submit" class="btn btn-success">  Back </button> </a></td>
   {% else %}
   <h1 class="text-center mt-4">Students Details</h1>
   {% endif %}

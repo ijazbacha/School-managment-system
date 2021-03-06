@@ -163,6 +163,10 @@ def add_student():
         std_contact = request.form['std_contact']
         stdclass = request.form['stdclass']
 
+        if stdclass == 'Open this select class':
+            flash('Please etner class!')
+            return redirect(url_for('add_student'))
+
         classes = Class.query.filter_by(id=stdclass).first()
         student = Student(
             std_name=std_name,
@@ -213,7 +217,14 @@ def update_student(id):
         student.f_name = request.form['f_name']
         student.std_address = request.form['std_address']
         student.std_contact = request.form['std_contact']
-        student.std_class = request.form['stdclass']
+
+        std_class = request.form['stdclass']
+        if std_class == 'Open this select class':
+            flash('Please etner class!')
+            return redirect(url_for('update_student', id=student.id))
+
+        student.std_class = std_class
+        
         student.admin_id = current_user.id
         db.session.commit()
         flash('{} is successfully update!'.format(student.std_name))
@@ -328,6 +339,9 @@ def add_teacher():
         tech_contact = request.form['tech_contact']
         admin_id = current_user.id
         tech_subject = request.form['tech_subject']
+        if tech_subject == 'Open this select subject':
+            flash('Please etner subject!')
+            return redirect(url_for('add_teacher')) 
         #tech_subject = Subject.query.filter_by(id=tech_subject.id).first()
         teacher = Teacher(
             tech_name=tech_name, 
@@ -339,16 +353,28 @@ def add_teacher():
             )
         db.session.add(teacher)
         db.session.commit()
-        flash('{} teacher is successfully added!')
-        return redirect(url_for('index'))
+        flash('{} teacher is successfully added!'.format(tech_name))
+        return redirect(url_for('teacher_detials'))
 
     return render_template('add_teacher.html', title='Add Teacher', subjects=subjects, teacher=None)
 
 
 @app.route('/teacher_detials')
 def teacher_detials():
-    teachers = Teacher.query.all()
-    return render_template('teacher_detials.html', title='Teachers', teachers=teachers)
+    query = request.args.get('query')
+    if query:
+        teachers = Teacher.query.filter(Teacher.tech_name.contains(query))
+        return render_template('teacher_detials.html', title='Teachers', teachers=teachers, query=query)
+    
+    page = request.args.get('page', 1, type=int)
+       
+    teachers = Teacher.query.order_by(Teacher.id.asc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('teacher_detials', page=teachers.next_num) \
+        if teachers.has_next else None
+    prev_url = url_for('teacher_detials', page=teachers.prev_num) \
+        if teachers.has_prev else None
+    return render_template('teacher_detials.html', title='Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
 @app.route('/teacher_profile/<id>')

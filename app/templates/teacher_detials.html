@@ -5,18 +5,18 @@
 
 <div class="container">
   
-    <h1 class="text-center mt-4">Teacher Details</h1>
-    <!--  
+     
   {% if query %}
   <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
+  <td> <a href=" {{ url_for('teacher_detials') }} "> <button type="submit" class="btn btn-success">  Back </button> </a></td>
   {% else %}
-  <h1 class="text-center mt-4">Students Details</h1>
+  <h1 class="text-center mt-4">Teacher Details</h1>
   {% endif %}
--->
+
   <form action="" method="GET">
     <div class="row g-3 align-items-center mt-4">
       <div class="col-auto">
-        <input type="search" name="query" id="inputPassword6" value="" class="form-control" placeholder="Enter Student or Father Name" required>
+        <input type="search" name="query" id="inputPassword6" value="{{query}}" class="form-control" placeholder="Enter Teacher Name" required>
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-dark">Search</button>
@@ -53,7 +53,7 @@
       {% endfor %}
     </table>
     <hr>
-    <!--  
+    
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         {% if prev_url %}
@@ -65,7 +65,7 @@
         {% endif %}
       </ul>
     </nav>
-    -->
+    
 </div>
 
 
