@@ -1,0 +1,232 @@
+
+#std-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#std-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#std-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#std-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#tech-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#tech-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#tech-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#tech-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#worker-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#worker-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#worker-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#worker-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#leave-std-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#leave-std-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#leave-std-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#leave-std-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#leave-tech-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#leave-tech-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#leave-tech-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#leave-tech-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#leave-worker-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#leave-worker-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#leave-worker-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#leave-worker-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#class-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#class-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#class-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#class-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#sub-box {
+    display: inline-block;
+    width: 300px;
+    height: 300px;
+    margin: 25px;
+    background-color: black;
+    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    color:whitesmoke;
+}
+
+#sub-box h1 {
+    padding-top: 100px;
+    text-align: center;
+    align-items: center;
+
+}
+
+#sub-box h2{
+    text-align: center;
+    padding-top: 50px;
+}
+
+#sub-box a{
+    text-decoration: none;
+    color: whitesmoke;
+}

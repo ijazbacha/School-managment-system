@@ -1,10 +1,13 @@
-from app import db, login
-from flask_login import UserMixin
+from app import db, login, app
+from flask import redirect, url_for
+from flask_login import UserMixin, current_user
 from datetime import datetime
+from flask_admin import  Admin, AdminIndexView
+from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash, check_password_hash 
 
 
-class Admin(UserMixin, db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
@@ -31,13 +34,13 @@ class Admin(UserMixin, db.Model):
     
 @login.user_loader
 def load_user(id):
-    return Admin.query.get(int(id))
+    return User.query.get(int(id))
 
 
 class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cls_name = db.Column(db.String(64), index=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     student = db.relationship('Student', backref='stdclass')
     leavestudent = db.relationship('LeaveStudent', backref='stdclass')
 
@@ -53,7 +56,7 @@ class Student(db.Model):
     std_contact = db.Column(db.String(64), index=True)
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return 'Student {}'.format(self.std_name)
@@ -66,7 +69,7 @@ class LeaveStudent(db.Model):
     std_contact = db.Column(db.String(64), index=True)
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return 'Leave Student {}'.format(self.std_name)
@@ -74,7 +77,7 @@ class LeaveStudent(db.Model):
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sub_name = db.Column(db.String(64))
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     teacher = db.relationship('Teacher', backref='sub')
     leaveteacher = db.relationship('LeaveTeacher', backref='sub')
 
@@ -89,7 +92,7 @@ class Teacher(db.Model):
     tech_address = db.Column(db.String(128), index=True)
     tech_contact = db.Column(db.String(64), index=True)
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
 
     def __repr__(self):
@@ -103,7 +106,7 @@ class LeaveTeacher(db.Model):
     tech_address = db.Column(db.String(128), index=True)
     tech_contact = db.Column(db.String(64), index=True)
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
 
     def __repr__(self):
@@ -118,7 +121,7 @@ class Worker(db.Model):
     worker_address = db.Column(db.String(128), index=True)
     worker_contact = db.Column(db.String(64), index=True)
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return 'Worker {}'.format(self.worker_name)
@@ -130,10 +133,34 @@ class LeaveWorker(db.Model):
     leave_worker_address = db.Column(db.String(128), index=True)
     leave_worker_contact = db.Column(db.String(64), index=True)
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
-    admin_id = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return 'Leave Worker {}'.format(self.leave_worker_name)
 
 
-    
+
+class MyAdminIndexViewView(AdminIndexView):
+
+    def is_accessible(self):
+        
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        # redirect to login page if user doesn't have access
+        return redirect(url_for('admin_login'))
+        
+admin = Admin(app, name='schoolmanagment', template_mode='bootstrap3', index_view=MyAdminIndexViewView())
+
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Class, db.session))
+admin.add_view(ModelView(Student, db.session))
+admin.add_view(ModelView(LeaveStudent, db.session))
+admin.add_view(ModelView(Subject, db.session))
+admin.add_view(ModelView(Teacher, db.session))
+admin.add_view(ModelView(LeaveTeacher, db.session))
+admin.add_view(ModelView(Worker, db.session))
+admin.add_view(ModelView(LeaveWorker, db.session))
+
+

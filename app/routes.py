@@ -5,17 +5,38 @@ import pdfkit
 import random
 from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Admin, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, Worker, LeaveWorker, Class
+from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, Worker, LeaveWorker, Class
 
 #config=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
 
 
 
-@app.route('/')
+@app.route('/admin')
 @login_required
 def index():
-    return render_template('index.html', title='Home')
+    students = Student.query.all()
+    teachers = Teacher.query.all()
+    workers = Worker.query.all()
+    classes = Class.query.all()
+    leave_std = LeaveStudent.query.all()
+    leave_tech = LeaveTeacher.query.all()
+    l_worker = LeaveWorker.query.all()
+    subjects = Subject.query.all()
+    return render_template('index.html', title='Home', 
+    students=students, 
+    teachers=teachers, 
+    workers=workers, 
+    classes=classes,
+    leave_std=leave_std,
+    leave_tech=leave_tech,
+    l_worker=l_worker,
+    subjects=subjects
+    )
+
+@app.route('/')
+def home():
+    return 'home page'
 
 
 @app.route('/admin_login', methods=['POST', 'GET'])
@@ -25,22 +46,18 @@ def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        #remember_me = request.form['remember_me']
+        remember_me = True if request.form.get('remember_me') else False 
 
 
-        admin = Admin.query.filter_by(username=username).first()
+        admin = User.query.filter_by(username=username).first()
         if admin is None or not admin.check_password(password):
             flash('Invild password or username!')
             return redirect(url_for('admin_login'))
 
-        if request.form.get('remember_me') == 'True':
-            login_user(admin, remember=True)
-            flash('Logged in successfully.')
-            return redirect(url_for('index'))      
-
-        login_user(admin, remember=False)
+        
+        login_user(admin, remember=remember_me)
         flash('Logged in successfully.')
-        return redirect(url_for('index'))
+        return redirect('/admin')     
 
     return render_template('login.html', title='Login')
 
@@ -71,17 +88,17 @@ def admin_registration():
             flash('Your password is not match!')
             return redirect(url_for('admin_registration'))
         
-        user = Admin.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
         if user is not None:
             flash('Please use a different username!')
             return redirect(url_for('admin_registration'))
 
-        user = Admin.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
         if user is not None:
             flash('Please use a different email!')
             return redirect(url_for('admin_registration'))
 
-        admin = Admin(username=username, email=email)
+        admin = User(username=username, email=email)
         admin.set_password(password)
         db.session.add(admin)
         db.session.commit()
@@ -98,7 +115,7 @@ def add_class():
         db.session.commit()
         flash('{} is successfully added'.format(cls_name))
         return redirect(url_for('list_of_class'))
-    return render_template('add_class.html', title='Add New Class', u_class=None)
+    return render_template('admin/add_class.html', title='Add New Class', u_class=None)
 
 
 @app.route('/list_of_class')

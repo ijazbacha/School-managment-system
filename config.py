@@ -1,5 +1,4 @@
 import os
-import pdfkit
 from datetime import timedelta
 
 
@@ -16,7 +15,10 @@ class Config(object):
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=4)
 
-    ENTRY_PER_PAGE = 3
+    ENTRY_PER_PAGE = 100
+
+    # set optional bootswatch theme
+    #FLASK_ADMIN_SWATCH = 'cerulean'
 
     #config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
