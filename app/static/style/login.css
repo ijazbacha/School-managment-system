@@ -4,7 +4,7 @@
         margin: 0;
         padding: 0;
         height: 100%; 
-        background: #25424d !important;
+        background: rgb(36, 29, 1); !important;
     }
     .user_card {
         height: 400px;
@@ -29,7 +29,7 @@
         width: 170px;
         top: -75px;
         border-radius: 50%;
-        background: #25424d;
+        background: rgb(36, 29, 1);;
         padding: 10px;
         text-align: center;
     }
