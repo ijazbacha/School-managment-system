@@ -153,14 +153,6 @@ class MyAdminIndexViewView(AdminIndexView):
 admin = Admin(app, name='schoolmanagment', template_mode='bootstrap3', index_view=MyAdminIndexViewView())
 
 
-admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Class, db.session))
-admin.add_view(ModelView(Student, db.session))
-admin.add_view(ModelView(LeaveStudent, db.session))
-admin.add_view(ModelView(Subject, db.session))
-admin.add_view(ModelView(Teacher, db.session))
-admin.add_view(ModelView(LeaveTeacher, db.session))
-admin.add_view(ModelView(Worker, db.session))
-admin.add_view(ModelView(LeaveWorker, db.session))
+
 
 

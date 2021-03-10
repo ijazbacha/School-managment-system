@@ -15,7 +15,7 @@ from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeache
 def home():
     return render_template('home.html')
 
-
+#------------ Admin ---------------#
 
 @app.route('/admin')
 @login_required
@@ -111,6 +111,7 @@ def admin_registration():
 
 
 @app.route('/admin/add_class', methods=['GET', 'POST'])
+@login_required
 def add_class():
     if request.method == 'POST':
         cls_name = request.form['cls_name']
@@ -122,12 +123,14 @@ def add_class():
 
 
 @app.route('/admin/list_of_class')
+@login_required
 def list_of_class():
     classes = Class.query.all()
     return render_template('admin/list_of_class.html', classes=classes)
 
 
 @app.route('/admin/update_class/<id>', methods=["GET", "POST"])
+@login_required
 def update_class(id):
     u_class = Class.query.filter_by(id=id).first()
     if request.method == "POST":
@@ -141,6 +144,7 @@ def update_class(id):
 
 
 @app.route('/admin/delete_class/<id>')
+@login_required
 def delete_class(id):
     try:
         d_class = Class.query.filter_by(id=id).first()
@@ -154,6 +158,7 @@ def delete_class(id):
 
 
 @app.route('/admin/class_wise_student/<std_class>')
+@login_required
 def class_wise_student(std_class):
     query = request.args.get('query')
     if query:
@@ -175,6 +180,7 @@ def class_wise_student(std_class):
 
 
 @app.route('/admin/add_student', methods=['GET', 'POST'])
+@login_required
 def add_student():
     classes = Class.query.all()
     if request.method == 'POST':
@@ -206,6 +212,7 @@ def add_student():
 
 
 @app.route('/admin/student_Detials', methods=['GET', 'POST'])
+@login_required
 def student_Detials():
     query = request.args.get('query')
     if query:
@@ -224,6 +231,7 @@ def student_Detials():
 
 
 @app.route('/admin/student_detials_pdf')
+@login_required
 def student_detials_pdf():
     students = Teacher.query.all()
     html = render_template("admin/student_detials_pdf.html", students=students)
@@ -235,12 +243,14 @@ def student_detials_pdf():
 
 
 @app.route('/admin/student_profile/<id>')
+@login_required
 def student_profile(id):
     student = Student.query.filter_by(id=id).first()
     return render_template('admin/student_profile.html', title='Student Profile', student=student)
 
 
 @app.route('/admin/student_profile_pdf/<id>')
+@login_required
 def student_profile_pdf(id):
     students = Teacher.query.filter_by(id=id).first()
     html = render_template("admin/student_profile_pdf.html", student=students)
@@ -252,6 +262,7 @@ def student_profile_pdf(id):
 
 
 @app.route('/admin/update_student/<id>', methods=['POST', 'GET'])
+@login_required
 def update_student(id):
     classes = Class.query.all()
     student = Student.query.filter_by(id=id).first()
@@ -276,6 +287,7 @@ def update_student(id):
 
 
 @app.route('/admin/leave_student/<id>')
+@login_required
 def leave_student(id):
     student = Student.query.filter_by(id=id).first()
     std_name = student.std_name
@@ -302,6 +314,7 @@ def leave_student(id):
 
 
 @app.route('/admin/leave_student_detials')
+@login_required
 def leave_student_detials():
     query = request.args.get('query')
     if query:
@@ -319,6 +332,7 @@ def leave_student_detials():
 
 
 @app.route('/admin/leave_student_pdf')
+@login_required
 def leave_student_pdf():
     students = Teacher.query.all()
     html = render_template("admin/leave_student_pdf.html", students=students)
@@ -330,6 +344,7 @@ def leave_student_pdf():
 
 
 @app.route('/admin/leave_student_delete/<id>')
+@login_required
 def leave_student_delete(id):
     try:
         student = LeaveStudent.query.filter_by(id=id).first()
@@ -342,6 +357,7 @@ def leave_student_delete(id):
 
 
 @app.route('/admin/add_subject', methods=['POST', 'GET'])
+@login_required
 def add_subject():
     if request.method == 'POST':
         sub_name = request.form['sub_name']
@@ -355,12 +371,14 @@ def add_subject():
 
 
 @app.route('/admin/list_of_subject/')
+@login_required
 def list_of_subject():
     subjects = Subject.query.all()
     return render_template('admin/list_of_subject.html', title='Subject', subjects=subjects)
 
 
 @app.route('/admin/update_subject/<id>', methods=['GET', 'POST'])
+@login_required
 def update_subject(id):
     subjects = Subject.query.filter_by(id=id).first()
     if request.method == 'POST':
@@ -374,6 +392,7 @@ def update_subject(id):
 
 
 @app.route('/admin/delete_subject/<id>')
+@login_required
 def delete_subject(id):
     subject = Subject.query.filter_by(id=id).first()
     if subject:
@@ -384,6 +403,7 @@ def delete_subject(id):
 
 
 @app.route('/admin/add_teacher', methods=['GET', 'POST'])
+@login_required
 def add_teacher():
     subjects = Subject.query.all()
     if request.method == 'POST':
@@ -414,6 +434,7 @@ def add_teacher():
 
 
 @app.route('/admin/teacher_detials')
+@login_required
 def teacher_detials():
     query = request.args.get('query')
     if query:
@@ -431,6 +452,7 @@ def teacher_detials():
 
 
 @app.route('/admin/teacher_detials_pdf')
+@login_required
 def teacher_detials_pdf():
     teachers = Teacher.query.all()
     html = render_template("admin/teacher_detials_pdf.html", teachers=teachers)
@@ -442,12 +464,14 @@ def teacher_detials_pdf():
 
 
 @app.route('/admin/teacher_profile/<id>')
+@login_required
 def teacher_profile(id):
     teacher = Teacher.query.filter_by(id=id).first()
     return render_template('admin/teacher_profile.html', title='Teacher Profile', teacher=teacher)
 
 
 @app.route('/admin/teacher_profile_pdf/<id>')
+@login_required
 def teacher_profile_pdf(id):
     teachers = Teacher.query.filter_by(id=id).first()
     html = render_template("admin/teacher_profile_pdf.html", teacher=teachers)
@@ -461,6 +485,7 @@ def teacher_profile_pdf(id):
 
 
 @app.route('/admin/update_teacher/<id>', methods=['GET', 'POST'])
+@login_required
 def update_teacher(id):
     subjects = Subject.query.all()
     teacher = Teacher.query.filter_by(id=id).first()
@@ -484,6 +509,7 @@ def update_teacher(id):
 
 
 @app.route('/admin/leave_teacher/<id>')
+@login_required
 def leave_teacher(id):
     teacher = Teacher.query.filter_by(id=id).first()
     if teacher:
@@ -509,6 +535,7 @@ def leave_teacher(id):
     
 
 @app.route('/admin/leave_teacher_detials')
+@login_required
 def leave_teacher_detials():
     query = request.args.get('query')
     if query:
@@ -527,6 +554,7 @@ def leave_teacher_detials():
 
 
 @app.route('/admin/leave_teacher_pdf')
+@login_required
 def leave_teacher_pdf():
     teachers = LeaveTeacher.query.all()
     html = render_template("admin/leave_teacher_pdf.html", teachers=teachers)
@@ -538,6 +566,7 @@ def leave_teacher_pdf():
 
 
 @app.route('/admin/leave_teacher_delete/<id>')
+@login_required
 def leave_teacher_delete(id):
     teacher = LeaveTeacher.query.filter_by(id=id).first()
     if teacher:
@@ -565,6 +594,7 @@ def add_worker():
 
 
 @app.route('/admin/worker_detials')
+@login_required
 def worker_detials():
     query = request.args.get('query')
     if query:
@@ -582,6 +612,7 @@ def worker_detials():
 
 
 @app.route('/admin/worker_detials_pdf')
+@login_required
 def worker_detials_pdf():
     workers = Worker.query.all()
     html = render_template("admin/worker_detials_pdf.html", workers=workers)
@@ -593,6 +624,7 @@ def worker_detials_pdf():
 
 
 @app.route('/admin/update_worker/<id>', methods=['GET', 'POST'])
+@login_required
 def update_worker(id):
     worker = Worker.query.filter_by(id=id).first()
     if request.method == 'POST':
@@ -610,6 +642,7 @@ def update_worker(id):
 
 
 @app.route('/admin/leave_worker/<id>')
+@login_required
 def leave_worker(id):
     worker = Worker.query.filter_by(id=id).first()
     try:
@@ -635,6 +668,7 @@ def leave_worker(id):
 
 
 @app.route('/admin/leave_worker_detials')
+@login_required
 def leave_worker_detials():
     query = request.args.get('query')
     if query:
@@ -652,6 +686,7 @@ def leave_worker_detials():
 
 
 @app.route('/admin/leave_worker_pdf', methods=['POST'])
+@login_required
 def leave_worker_pdf():
     leave_worker = LeaveWorker.query.all()
     html = render_template("admin/leave_worker_pdf.html", leave_worker=leave_worker)
@@ -664,6 +699,7 @@ def leave_worker_pdf():
 
 
 @app.route('/admin/leave_worker_delete/<id>')
+@login_required
 def leave_worker_delete(id):
     leave_worker = LeaveWorker.query.filter_by(id=id).first()
     try:
@@ -677,6 +713,51 @@ def leave_worker_delete(id):
 
 
 
+
+
+#------------- End Admin ---------------#
+
+
+
+
+
+
+#------------- Teacher -----------------#
+
+@app.route('/teacher/teacher_login', methods=['GET', 'POST'])
+def teacher_login():
+    if request.method == 'POST':
+        return redirect(url_for('teacher_index'))
+    return render_template('teacher/teacher_login.html', title='Teacher Login')
+
+
+@app.route('/teacher/teacher_index')
+def teacher_index():
+    return render_template('teacher/index.html', title='Home')
+
+
+
+
+#------------- End Teacher -------------#
+
+
+
+
+#------------- Student -----------------#
+
+@app.route('/teacher/student_login', methods=['GET', 'POST'])
+def student_login():
+    if request.method == 'POST':
+        return redirect(url_for('student_index'))
+    return render_template('student/student_login.html', title='Student Login')
+
+
+
+@app.route('/student/student_index')
+def student_index():
+    return render_template('student/index.html', title='Home')
+
+#------------- End Student -------------#
 
 
 
