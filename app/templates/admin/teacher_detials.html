@@ -1,22 +1,22 @@
-{% extends 'base.html' %}
+{% extends 'admin/base.html' %}
 
 
 {% block content %}
 
 <div class="container">
   
-
+     
   {% if query %}
   <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
-  <td> <a href=" {{ url_for('student_Detials') }} "> <button type="submit" class="btn btn-success">  Back </button> </a></td>
+  <td> <a href=" {{ url_for('teacher_detials') }} "> <button type="submit" class="btn btn-success">  Back </button> </a></td>
   {% else %}
-  <h1 class="text-center mt-4">Students Details</h1>
+  <h1 class="text-center mt-4">Teacher Details</h1>
   {% endif %}
 
   <form action="" method="GET">
     <div class="row g-3 align-items-center mt-4">
       <div class="col-auto">
-        <input type="search" name="query" id="inputPassword6" value="{{query}}" class="form-control" placeholder="Enter Student or Father Name" required>
+        <input type="search" name="query" id="inputPassword6" value="{{query}}" class="form-control" placeholder="Enter Teacher Name" required>
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-dark">Search</button>
@@ -29,32 +29,34 @@
         <tr>
           <th scope="col">Id</th>
           <th scope="col">Name</th>
-          <th scope="col">Father Name</th>
+          <th scope="col">Email</th>
           <th scope="col">Address</th>
           <th scope="col">Contact</th>
-          <th scope="col">Class</th>
+          <th scope="col">Subject</th>
           <th scope="col">Admin</th>
           <th scope="col">Profile</th>
         </tr>
       </thead>
-      {% for student in students %}
+      {% for teacher in teachers %}
       <tbody>
         <tr>
-          <td> {{ student.id }}</td>
-          <td> {{ student.std_name }} </td>
-          <td> {{ student.f_name }} </td>
-          <td> {{ student.std_address }} </td>
-          <td> {{ student.std_contact }} </td>
-          <td> <a href=" {{ url_for('class_wise_student', std_class=student.stdclass.id)}} "> {{ student.stdclass.cls_name }} </a></td>
-          <td> {{ student.admin.username }} </td>
-          <td> <a href=" {{ url_for('student_profile', id=student.id)}} "> <button type="submit" class="btn btn-success">  Profile </button> </a></td>
+          <td> {{ teacher.id }}</td>
+          <td> {{ teacher.tech_name }} </td>
+          <td> {{ teacher.email }} </td>
+          <td> {{ teacher.tech_address }} </td>
+          <td> {{ teacher.tech_contact }} </td>
+          <td>  {{ teacher.sub.sub_name }} </td>
+          <td> {{ teacher.admin.username }} </td>
+          <td> <a href=" {{ url_for('teacher_profile', id=teacher.id) }} "> <button type="submit" class="btn btn-success">  Profile </button> </a></td>
         </tr>
       </tbody>
       {% endfor %}
     </table>
     <hr>
+    
 
-    <a href="{{ url_for('student_detials_pdf') }}"><button type="submit" class="btn btn-danger float-end">Generate Pdf</button></a>
+    <a href="{{ url_for('teacher_detials_pdf') }}"><button type="submit" class="btn btn-danger float-end">Generate Pdf</button></a>
+
 
     <nav aria-label="Page navigation example">
       <ul class="pagination">
@@ -67,6 +69,7 @@
         {% endif %}
       </ul>
     </nav>
+    
 </div>
 
 

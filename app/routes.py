@@ -121,7 +121,7 @@ def add_class():
 @app.route('/list_of_class')
 def list_of_class():
     classes = Class.query.all()
-    return render_template('list_of_class.html', classes=classes)
+    return render_template('admin/list_of_class.html', classes=classes)
 
 
 @app.route('/update_class/<id>', methods=["GET", "POST"])
@@ -133,7 +133,7 @@ def update_class(id):
         db.session.commit()
         flash('{} is successfully update!'.format(u_class.cls_name))
         return redirect(url_for('list_of_class'))
-    return render_template('add_class.html', title='Update Class', u_class=u_class)
+    return render_template('admin/add_class.html', title='Update Class', u_class=u_class)
 
 
 
@@ -156,7 +156,7 @@ def class_wise_student(std_class):
     if query:
         students = Student.query.filter(Student.std_name.contains(query)|
                                         Student.f_name.contains(query))
-        return render_template('class_wise_student.html', title='Class Wise Student', query=query, students=students)
+        return render_template('admin/class_wise_student.html', title='Class Wise Student', query=query, students=students)
 
     page = request.args.get('page', 1, type=int)
     class_name = Class.query.filter_by(id=std_class).first()
@@ -166,7 +166,7 @@ def class_wise_student(std_class):
         if students.has_next else None
     prev_url = url_for('class_wise_student', std_class=std_class, page=students.prev_num) \
         if students.has_prev else None
-    return render_template('class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students.items, next_url=next_url, prev_url=prev_url)
+    return render_template('admin/class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 
@@ -199,7 +199,7 @@ def add_student():
         flash('{} is successfully added'.format(std_name))
         return redirect(url_for('add_student'))
 
-    return render_template('add_student.html', title='Add Student', classes=classes, student=None)
+    return render_template('admin/add_student.html', title='Add Student', classes=classes, student=None)
 
 
 @app.route('/student_Detials', methods=['GET', 'POST'])
@@ -208,7 +208,7 @@ def student_Detials():
     if query:
         students = Student.query.filter(Student.std_name.contains(query)|
                                         Student.f_name.contains(query))
-        return render_template('student_Detials.html', title='Student Detials', students=students, query=query)
+        return render_template('admin/student_Detials.html', title='Student Detials', students=students, query=query)
         
     page = request.args.get('page', 1, type=int)
     students = Student.query.order_by(Student.id.asc()).paginate(
@@ -217,13 +217,13 @@ def student_Detials():
         if students.has_next else None
     prev_url = url_for('student_Detials', page=students.prev_num) \
         if students.has_prev else None
-    return render_template('student_Detials.html', title='Student Detials', students=students.items, next_url=next_url, prev_url=prev_url)
+    return render_template('admin/student_Detials.html', title='Student Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/student_detials_pdf')
 def student_detials_pdf():
     students = Teacher.query.all()
-    html = render_template("student_detials_pdf.html", students=students)
+    html = render_template("admin/student_detials_pdf.html", students=students)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -234,13 +234,13 @@ def student_detials_pdf():
 @app.route('/student_profile/<id>')
 def student_profile(id):
     student = Student.query.filter_by(id=id).first()
-    return render_template('student_profile.html', title='Student Profile', student=student)
+    return render_template('admin/student_profile.html', title='Student Profile', student=student)
 
 
 @app.route('/student_profile_pdf/<id>')
 def student_profile_pdf(id):
     students = Teacher.query.filter_by(id=id).first()
-    html = render_template("student_profile_pdf.html", student=students)
+    html = render_template("admin/student_profile_pdf.html", student=students)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -269,7 +269,7 @@ def update_student(id):
         db.session.commit()
         flash('{} is successfully update!'.format(student.std_name))
         return redirect(url_for('student_profile', id=student.id))
-    return render_template('add_student.html', title='Update Student', student=student, classes=classes)
+    return render_template('admin/add_student.html', title='Update Student', student=student, classes=classes)
 
 
 @app.route('/leave_student/<id>')
@@ -304,7 +304,7 @@ def leave_student_detials():
     if query:
         students = LeaveStudent.query.filter(LeaveStudent.std_name.contains(query)|
                                         LeaveStudent.f_name.contains(query))
-        return render_template('leave_student_detials.html', title='Leave Students Detials', students=students, query=query)
+        return render_template('admin/leave_student_detials.html', title='Leave Students Detials', students=students, query=query)
     page = request.args.get('page', 1, type=int)
     students = LeaveStudent.query.order_by(LeaveStudent.id.asc()).paginate(
         page, app.config['ENTRY_PER_PAGE'], False)
@@ -312,13 +312,13 @@ def leave_student_detials():
         if students.has_next else None
     prev_url = url_for('leave_student_detials', page=students.prev_num) \
         if students.has_prev else None
-    return render_template('leave_student_detials.html', title='Leave Students Detials', students=students.items, next_url=next_url, prev_url=prev_url)
+    return render_template('admin/leave_student_detials.html', title='Leave Students Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/leave_student_pdf')
 def leave_student_pdf():
     students = Teacher.query.all()
-    html = render_template("leave_student_pdf.html", students=students)
+    html = render_template("admin/leave_student_pdf.html", students=students)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -348,13 +348,13 @@ def add_subject():
         db.session.commit()
         flash('{} subject is successfully added!'.format(sub_name))
         return redirect(url_for('list_of_subject'))
-    return render_template('add_subject.html', title='Add Subject', subjects=None)
+    return render_template('admin/add_subject.html', title='Add Subject', subjects=None)
 
 
 @app.route('/list_of_subject/')
 def list_of_subject():
     subjects = Subject.query.all()
-    return render_template('list_of_subject.html', title='Subject', subjects=subjects)
+    return render_template('admin/list_of_subject.html', title='Subject', subjects=subjects)
 
 
 @app.route('/update_subject/<id>', methods=['GET', 'POST'])
@@ -366,7 +366,7 @@ def update_subject(id):
         db.session.commit()
         flash('{} subject is successfully added!'.format(subjects.sub_name))
         return redirect(url_for('list_of_subject'))
-    return render_template('add_subject.html', title='Add Subject', subjects=subjects)
+    return render_template('admin/add_subject.html', title='Add Subject', subjects=subjects)
 
 
 
@@ -407,7 +407,7 @@ def add_teacher():
         flash('{} teacher is successfully added!'.format(tech_name))
         return redirect(url_for('teacher_detials'))
 
-    return render_template('add_teacher.html', title='Add Teacher', subjects=subjects, teacher=None)
+    return render_template('admin/add_teacher.html', title='Add Teacher', subjects=subjects, teacher=None)
 
 
 @app.route('/teacher_detials')
@@ -415,7 +415,7 @@ def teacher_detials():
     query = request.args.get('query')
     if query:
         teachers = Teacher.query.filter(Teacher.tech_name.contains(query))
-        return render_template('teacher_detials.html', title='Teachers', teachers=teachers, query=query)
+        return render_template('admin/teacher_detials.html', title='Teachers', teachers=teachers, query=query)
     
     page = request.args.get('page', 1, type=int)  
     teachers = Teacher.query.order_by(Teacher.id.asc()).paginate(
@@ -424,13 +424,13 @@ def teacher_detials():
         if teachers.has_next else None
     prev_url = url_for('teacher_detials', page=teachers.prev_num) \
         if teachers.has_prev else None
-    return render_template('teacher_detials.html', title='Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
+    return render_template('admin/teacher_detials.html', title='Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
 @app.route('/teacher_detials_pdf')
 def teacher_detials_pdf():
     teachers = Teacher.query.all()
-    html = render_template("teacher_detials_pdf.html", teachers=teachers)
+    html = render_template("admin/teacher_detials_pdf.html", teachers=teachers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -441,13 +441,13 @@ def teacher_detials_pdf():
 @app.route('/teacher_profile/<id>')
 def teacher_profile(id):
     teacher = Teacher.query.filter_by(id=id).first()
-    return render_template('teacher_profile.html', title='Teacher Profile', teacher=teacher)
+    return render_template('admin/teacher_profile.html', title='Teacher Profile', teacher=teacher)
 
 
 @app.route('/teacher_profile_pdf/<id>')
 def teacher_profile_pdf(id):
     teachers = Teacher.query.filter_by(id=id).first()
-    html = render_template("teacher_profile_pdf.html", teacher=teachers)
+    html = render_template("admin/teacher_profile_pdf.html", teacher=teachers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -477,7 +477,7 @@ def update_teacher(id):
         db.session.commit()
         flash('Teacher {} successfully update!'.format(teacher.tech_name))
         return redirect(url_for('teacher_profile', id=teacher.id))
-    return render_template('add_teacher.html', title='Update Teacher', teacher=teacher, subjects=subjects)
+    return render_template('admin/add_teacher.html', title='Update Teacher', teacher=teacher, subjects=subjects)
 
 
 @app.route('/leave_teacher/<id>')
@@ -510,7 +510,7 @@ def leave_teacher_detials():
     query = request.args.get('query')
     if query:
         teachers = LeaveTeacher.query.filter(LeaveTeacher.tech_name.contains(query))
-        return render_template('leave_teacher_detials.html', title='Leave Teachers', teachers=teachers, query=query)
+        return render_template('admin/leave_teacher_detials.html', title='Leave Teachers', teachers=teachers, query=query)
     
     page = request.args.get('page', 1, type=int)
        
@@ -520,13 +520,13 @@ def leave_teacher_detials():
         if teachers.has_next else None
     prev_url = url_for('leave_teacher_detials', page=teachers.prev_num) \
         if teachers.has_prev else None
-    return render_template('leave_teacher_detials.html', title='Leave Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
+    return render_template('admin/leave_teacher_detials.html', title='Leave Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
 @app.route('/leave_teacher_pdf')
 def leave_teacher_pdf():
     teachers = LeaveTeacher.query.all()
-    html = render_template("leave_teacher_pdf.html", teachers=teachers)
+    html = render_template("admin/leave_teacher_pdf.html", teachers=teachers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -557,7 +557,7 @@ def add_worker():
         flash('{} is successfully added'.format(worker_name))
         return redirect(url_for('worker_detials'))
 
-    return render_template('worker.html', title='Worker', worker=None)
+    return render_template('admin/worker.html', title='Worker', worker=None)
 
 
 
@@ -566,7 +566,7 @@ def worker_detials():
     query = request.args.get('query')
     if query:
         workers = Worker.query.filter(Worker.worker_name.contains(query))
-        return render_template('worker_detials.html', title='Search Worker', workers=workers, query=query)
+        return render_template('admin/worker_detials.html', title='Search Worker', workers=workers, query=query)
     
     page = request.args.get('page', 1, type=int)   
     workers = Worker.query.order_by(Worker.id.asc()).paginate(
@@ -575,13 +575,13 @@ def worker_detials():
         if workers.has_next else None
     prev_url = url_for('worker_detials', page=workers.prev_num) \
         if workers.has_prev else None
-    return render_template('worker_detials.html', title='Worker Detials', workers=workers.items, next_url=next_url, prev_url=prev_url, page=page)
+    return render_template('admin/worker_detials.html', title='Worker Detials', workers=workers.items, next_url=next_url, prev_url=prev_url, page=page)
 
 
 @app.route('/worker_detials_pdf')
 def worker_detials_pdf():
     workers = Worker.query.all()
-    html = render_template("worker_detials_pdf.html", workers=workers)
+    html = render_template("admin/worker_detials_pdf.html", workers=workers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -602,7 +602,7 @@ def update_worker(id):
         flash('{} is successfully update'.format(worker.worker_name))
         return redirect(url_for('worker_detials'))
 
-    return render_template('worker.html', title='Worker', worker=worker)
+    return render_template('admin/worker.html', title='Worker', worker=worker)
 
 
 
@@ -636,7 +636,7 @@ def leave_worker_detials():
     query = request.args.get('query')
     if query:
         leave_worker = LeaveWorker.query.filter(LeaveWorker.leave_worker_name.contains(query))
-        return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker, query=query)
+        return render_template('admin/leave_worker.html', title='Leave Worker', leave_worker=leave_worker, query=query)
         
     page = request.args.get('page', 1, type=int)
     leave_worker = LeaveWorker.query.order_by(LeaveWorker.id.asc()).paginate(
@@ -645,13 +645,13 @@ def leave_worker_detials():
         if leave_worker.has_next else None
     prev_url = url_for('leave_worker_detials', page=leave_worker.prev_num) \
         if leave_worker.has_prev else None
-    return render_template('leave_worker.html', title='Leave Worker', leave_worker=leave_worker.items, next_url=next_url, prev_url=prev_url)
+    return render_template('admin/leave_worker.html', title='Leave Worker', leave_worker=leave_worker.items, next_url=next_url, prev_url=prev_url)
 
 
 @app.route('/leave_worker_pdf', methods=['POST'])
 def leave_worker_pdf():
     leave_worker = LeaveWorker.query.all()
-    html = render_template("leave_worker_pdf.html", leave_worker=leave_worker)
+    html = render_template("admin/leave_worker_pdf.html", leave_worker=leave_worker)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
