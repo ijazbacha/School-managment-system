@@ -3,7 +3,7 @@ from app import app, db
 from datetime import datetime
 import pdfkit
 import random
-from flask import Flask, render_template, redirect, url_for, request, flash, abort, make_response
+from flask import Flask, render_template, redirect, g, url_for, request, flash, session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, Worker, LeaveWorker, Class
 
@@ -712,9 +712,6 @@ def leave_worker_delete(id):
         return redirect(url_for('leave_worker_detials'))
 
 
-
-
-
 #------------- End Admin ---------------#
 
 
@@ -724,21 +721,50 @@ def leave_worker_delete(id):
 
 #------------- Teacher -----------------#
 
+@app.before_request
+def before_request():
+    g.user = None
+    if 'teacher_id' in session:
+        user = Teacher.query.filter_by(id=session['teacher_id']).first()
+        g.user = user
+
+
+
 @app.route('/teacher/teacher_login', methods=['GET', 'POST'])
 def teacher_login():
     if request.method == 'POST':
-        return redirect(url_for('teacher_index'))
+        username = request.form['username']
+        password = request.form['password']
+
+        user = Teacher.query.filter_by(tech_name=username).first()
+        if user and user.tech_contact == password:
+            session['teacher_id'] = user.id
+            flash('Successfully loggin!')
+            return redirect(url_for('teacher_index'))
+
+        flash('Invilde username or password')
+        return redirect(url_for('teacher_login'))
     return render_template('teacher/teacher_login.html', title='Teacher Login')
+
+
+
+@app.route('/teacher/teacher_logout')
+def teacher_logout():
+    session.pop('teacher_id', None)
+    return redirect(url_for('teacher_login'))
 
 
 @app.route('/teacher/teacher_index')
 def teacher_index():
+    if not g.user:
+        return redirect(url_for('teacher_login'))
     return render_template('teacher/index.html', title='Home')
 
 
 
-
 #------------- End Teacher -------------#
+
+
 
 
 
