@@ -13,6 +13,11 @@ from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeache
 
 @app.route('/')
 def home():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if g.user:
+        return redirect(url_for('teacher_index'))
     return render_template('home.html')
 
 #------------ Admin ---------------#
@@ -20,6 +25,8 @@ def home():
 @app.route('/admin')
 @login_required
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     students = Student.query.all()
     teachers = Teacher.query.all()
     workers = Worker.query.all()
@@ -28,7 +35,7 @@ def index():
     leave_tech = LeaveTeacher.query.all()
     l_worker = LeaveWorker.query.all()
     subjects = Subject.query.all()
-    return render_template('index.html', title='Home', 
+    return render_template('admin/index.html', title='Home', 
     students=students, 
     teachers=teachers, 
     workers=workers, 
@@ -62,7 +69,7 @@ def admin_login():
         flash('Logged in successfully.')
         return redirect('/admin')     
 
-    return render_template('login.html', title='Login')
+    return render_template('admin/login.html', title='Login')
 
 
 @app.route('/admin_logout')
@@ -107,7 +114,7 @@ def admin_registration():
         db.session.commit()
         flash("Successfully register")
         return redirect(url_for('admin_login'))
-    return render_template('register.html', title='Registration')
+    return render_template('admin/register.html', title='Registration')
 
 
 @app.route('/admin/add_class', methods=['GET', 'POST'])
@@ -732,6 +739,8 @@ def before_request():
 
 @app.route('/teacher/teacher_login', methods=['GET', 'POST'])
 def teacher_login():
+    if g.user:
+        return redirect(url_for('teacher_index'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -754,6 +763,7 @@ def teacher_logout():
     return redirect(url_for('teacher_login'))
 
 
+
 @app.route('/teacher/teacher_index')
 def teacher_index():
     if not g.user:
@@ -761,6 +771,9 @@ def teacher_index():
     return render_template('teacher/index.html', title='Home')
 
 
+@app.route('/teacher/upload_lecture')
+def upload_lecture():
+    pass
 
 #------------- End Teacher -------------#
 
