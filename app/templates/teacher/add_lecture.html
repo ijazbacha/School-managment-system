@@ -35,22 +35,21 @@
     {% endwith %}
 
     <div class="container mt-4">
-        <div class="box">
-            <a href=" {{ url_for('teacher_logout')}} "><button type="submit" class="btn btn-success float-end">Logout</button></a>
-            <h1> Profile </h1>
-            <hr>
-            <h3><b> Name: </b> <span style="float: right;">{{ g.user.tech_name }}</span></h3>
-            <p><b> Email: </b><span style="float: right; text-align: justify;"> {{ g.user.email }} </span></p>
-            <p><b> Address: </b> <span style="float: right;">{{ g.user.tech_address }} </span></p>
-            <p><b> Contact: </b> <span style="float: right;">{{ g.user.tech_contact }} </span></p>
-            <p><b> Subject: </b> <span style="float: right;">{{ g.user.sub.sub_name }}</span> </p>
-            <p><b> Join Date: </b> <span style="float: right;">{{ g.user.join_date.strftime('%Y-%m-%d') }} </span></p>
-        </div>
-        <div class="button">
-            <a href=" {{ url_for('upload_lecture') }} "><button type="submit" class="btn btn-secondary">Upload Lecture</button></a>
-            <a href="  "><button type="submit" class="btn btn-secondary">View Lectures</button></a>
-            <a href="  "><button type="submit" class="btn btn-secondary">Take Attendance</button></a>
-        </div>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="title" class="form-label">Enter Title</label>
+              <input type="text" class="form-control" name="title" id="title" placeholder="Enter title" required>
+            </div>
+            <div class="mb-3">
+              <label for="lecture" class="form-label">Enter Lecture</label>
+              <textarea class="form-control rounded-0" name="lecture" id="lecture" placeholder="Enter Lecture" rows="7" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Upload Image</label>
+                <input class="form-control" type="file" name="image" id="formFile">
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+          </form>
     </div>
 
 

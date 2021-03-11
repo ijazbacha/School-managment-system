@@ -94,6 +94,7 @@ class Teacher(db.Model):
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
+    uploadlecture = db.relationship('UploadLecture', backref='t_lecture')
 
     def __repr__(self):
         return 'Teacher {}'.format(self.tech_name)
@@ -111,6 +112,19 @@ class LeaveTeacher(db.Model):
 
     def __repr__(self):
         return 'LeaveTeacher {}'.format(self.tech_name)
+
+
+class UploadLecture(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(64))
+    lecture = db.Column(db.String(64))
+    img = db.Column(db.LargeBinary)
+    img_name = db.Column(db.String(64))
+    teacher = db.Column(db.Integer, db.ForeignKey('teacher.id'))
+
+
+    def __repr__(self):
+        return 'Lecture {}'.format(self.title)
 
 
 class Worker(db.Model):

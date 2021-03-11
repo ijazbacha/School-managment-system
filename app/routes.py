@@ -5,7 +5,7 @@ import pdfkit
 import random
 from flask import Flask, render_template, redirect, g, url_for, request, flash, session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, Worker, LeaveWorker, Class
+from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, Worker, LeaveWorker, Class
 
 #config=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
@@ -771,9 +771,19 @@ def teacher_index():
     return render_template('teacher/index.html', title='Home')
 
 
-@app.route('/teacher/upload_lecture')
+@app.route('/teacher/upload_lecture', methods=['GET', 'POST'])
 def upload_lecture():
-    pass
+    if request.method == 'POST':
+        title = request.form['title']
+        lecture = request.form['lecture']
+        img = request.files['image']
+        teacher = g.user.id
+        new_lecture = UploadLecture(title=title, lecture=lecture, img=img.read(), img_name=img.filename, teacher=teacher)
+        db.session.add(new_lecture)
+        db.session.commit()
+        flash('Successfully upload!')
+        return redirect(url_for('teacher_index'))
+    return render_template('teacher/add_lecture.html')
 
 #------------- End Teacher -------------#
 
