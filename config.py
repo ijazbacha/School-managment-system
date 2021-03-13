@@ -17,6 +17,8 @@ class Config(object):
 
     ENTRY_PER_PAGE = 100
 
+    ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
+
     # set optional bootswatch theme
     #FLASK_ADMIN_SWATCH = 'cerulean'
 

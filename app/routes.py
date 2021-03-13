@@ -1,14 +1,18 @@
-from sqlalchemy.orm import query
 from app import app, db
 from datetime import datetime
+from werkzeug.utils import secure_filename
 import pdfkit
-import random
+import os
 from flask import Flask, render_template, redirect, g, url_for, request, flash, session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, Worker, LeaveWorker, Class
 
 #config=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
+
+app.config['IMAGE_UPLOADS'] = os.path.join(app.root_path, 'static/image')
+#app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
+
 
 
 @app.route('/')
@@ -771,19 +775,52 @@ def teacher_index():
     return render_template('teacher/index.html', title='Home')
 
 
+
+
+def allowed_image(filename):
+
+    if not "." in filename:
+        flash('Image must be [jpeg, jpg, png, gif]')
+        return False
+
+    ext = filename.rsplit(".", 1)[1]
+
+    if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
+        return True
+    else:
+        flash('Image must be [jpeg, jpg, png, gif]')
+        return False
+
+
+
 @app.route('/teacher/upload_lecture', methods=['GET', 'POST'])
 def upload_lecture():
     if request.method == 'POST':
         title = request.form['title']
         lecture = request.form['lecture']
-        img = request.files['image']
         teacher = g.user.id
-        new_lecture = UploadLecture(title=title, lecture=lecture, img=img.read(), img_name=img.filename, teacher=teacher)
-        db.session.add(new_lecture)
-        db.session.commit()
-        flash('Successfully upload!')
-        return redirect(url_for('teacher_index'))
+
+        img = request.files['image']
+        if img.filename == '':
+            flash('Please upload image!')
+
+        if allowed_image(img.filename):
+            filename = secure_filename(img.filename)
+            img.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
+            new_lecture = UploadLecture(title=title, lecture=lecture, teacher=teacher, img=img.read(), img_name=filename)
+            db.session.add(new_lecture)
+            db.session.commit()
+            flash('Successfully upload!')
+            return redirect(url_for('preview_lecture', teacher=g.user.id))
+          
     return render_template('teacher/add_lecture.html')
+
+
+
+@app.route('/teacher/preview_lecture/<teacher>')
+def preview_lecture(teacher):
+    lectures = UploadLecture.query.filter_by(teacher=teacher).all()
+    return render_template('teacher/preview_lecture.html', lectures=lectures)
 
 #------------- End Teacher -------------#
 

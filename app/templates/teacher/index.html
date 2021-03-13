@@ -48,7 +48,7 @@
         </div>
         <div class="button">
             <a href=" {{ url_for('upload_lecture') }} "><button type="submit" class="btn btn-secondary">Upload Lecture</button></a>
-            <a href="  "><button type="submit" class="btn btn-secondary">View Lectures</button></a>
+            <a href=" {{ url_for('preview_lecture', teacher=g.user.id) }} "><button type="submit" class="btn btn-secondary">View Lectures</button></a>
             <a href="  "><button type="submit" class="btn btn-secondary">Take Attendance</button></a>
         </div>
     </div>
