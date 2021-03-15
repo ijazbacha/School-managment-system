@@ -822,6 +822,12 @@ def preview_lecture(teacher):
     lectures = UploadLecture.query.filter_by(teacher=teacher).all()
     return render_template('teacher/preview_lecture.html', lectures=lectures)
 
+
+@app.route('/teacher/lecture_detial_view/<id>')
+def lecture_detial_view(id):
+    lecture = UploadLecture.query.filter_by(id=id).first()
+    return render_template('teacher/lecture_detial_view.html', lecture=lecture)
+
 #------------- End Teacher -------------#
 
 
