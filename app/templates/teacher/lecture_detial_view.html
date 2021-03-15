@@ -14,7 +14,7 @@
 
         .responsive {
             width: 100%;
-            height: 400px;
+            height: auto;
         }
 
         p {
@@ -39,7 +39,7 @@
     <div class="container">
        <img src="/static/image/{{lecture.img_name}}" class="responsive" alt="lecture pic">
        <h1 class="mt-2">{{lecture.title.title()}}</h1>
-       <p class="text-capitalize text-justify">{{lecture.lecture}}</p>
+       <p class="text-capitalize text-justify">{{lecture.lecture|safe}}</p>
     </div>
 
 

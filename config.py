@@ -19,6 +19,8 @@ class Config(object):
 
     ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
 
+    CKEDITOR_PKG_TYPE = 'standard'
+
     # set optional bootswatch theme
     #FLASK_ADMIN_SWATCH = 'cerulean'
 
