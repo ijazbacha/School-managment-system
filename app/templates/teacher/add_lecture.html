@@ -50,7 +50,11 @@
                 <label for="formFile" class="form-label">Upload Image</label>
                 <input class="form-control" type="file" name="image" id="formFile">
             </div>
+            {% if lecture %}
+            <button type="submit" class="btn btn-success">Update</button>
+            {% else %}
             <button type="submit" class="btn btn-success">Submit</button>
+            {% endif %}
           </form>
     </div>
 

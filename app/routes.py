@@ -927,7 +927,7 @@ def student_logout():
 def student_index():
     if not g.std_user:
         return redirect(url_for('student_login'))
-    return render_template('student/index.html', title='Home')
+    return render_template('student/index.html')
 
 #------------- End Student -------------#
 
