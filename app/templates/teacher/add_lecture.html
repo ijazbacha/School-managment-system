@@ -38,12 +38,12 @@
         <form method="POST" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="title" class="form-label">Enter Title</label>
-              <input type="text" class="form-control" name="title" id="title" placeholder="Enter title" required>
+              <input type="text" class="form-control" name="title" value="{{lecture.title}}" id="title" placeholder="Enter title" required>
             </div>
             <div class="mb-3">
               <label for="lecture" class="form-label">Enter Lecture</label>
              <!-- {{ ckeditor.create() }}-->
-               <textarea class="form-control rounded-0" name="lecture" id="lecture" placeholder="Enter Lecture" rows="7" required></textarea>
+               <textarea class="form-control rounded-0" name="lecture" id="lecture" placeholder="Enter Lecture" rows="7" required>{{lecture.lecture}}</textarea>
             
             </div>
             <div class="mb-3">

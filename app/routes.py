@@ -127,7 +127,8 @@ def add_class():
     if request.method == 'POST':
         cls_name = request.form['cls_name']
         cls_fee = request.form['cls_fee']
-        db.session.add(Class(cls_name=cls_name, cls_fee=cls_fee))
+        admin_id = current_user.id
+        db.session.add(Class(cls_name=cls_name, cls_fee=cls_fee, admin_id=admin_id))
         db.session.commit()
         flash('{} is successfully added'.format(cls_name))
         return redirect(url_for('list_of_class'))
@@ -828,7 +829,7 @@ def upload_lecture():
             flash('Successfully upload!')
             return redirect(url_for('preview_lecture', teacher=g.user.id))
           
-    return render_template('teacher/add_lecture.html')
+    return render_template('teacher/add_lecture.html', lecture=None)
 
 
 
@@ -848,6 +849,29 @@ def lecture_detial_view(id):
         
     lecture = UploadLecture.query.filter_by(id=id).first()
     return render_template('teacher/lecture_detial_view.html', lecture=lecture)
+
+@app.route('/teacher/update_lecture/<id>', methods=['GET', 'POST'])
+def update_lecture(id=id):
+    lecture = UploadLecture.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        lecture.title = request.form['title']
+        lecture.lecture = request.form['lecture']
+        image = request.files['image']
+        
+        if image.filename == '':
+            flash('Please upload image!')
+
+        if allowed_image(image.filename):
+            filename = secure_filename(image.filename)
+            lecture.img_name = filename
+            image.save(os.path.join(app.config['IMAGE_UPLOADS'], filename))
+
+        db.session.commit()
+        return redirect(url_for('preview_lecture', teacher=g.user.id))
+            
+    return render_template('teacher/add_lecture.html', lecture=lecture)
+
+
 
 #------------- End Teacher -------------#
 

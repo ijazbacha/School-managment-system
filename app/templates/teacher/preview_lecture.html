@@ -54,7 +54,7 @@
                           <h5 class="card-title"><b>{{lecture.title|truncate(20)|title()}}</b></h5>
                           <p class="card-text">{{lecture.lecture|safe|truncate(60)}}.</p>
                           <a href=" {{ url_for('lecture_detial_view', id=lecture.id) }} " class="btn btn-primary ms-2">View Lecture</a>
-                          <a href="#" class="btn btn-success">Update</a>
+                          <a href=" {{ url_for('update_lecture', id=lecture.id)}} " class="btn btn-success">Update</a>
                         </div>
                       </div>
                 {% endfor %}
