@@ -126,7 +126,8 @@ def admin_registration():
 def add_class():
     if request.method == 'POST':
         cls_name = request.form['cls_name']
-        db.session.add(Class(cls_name=cls_name))
+        cls_fee = request.form['cls_fee']
+        db.session.add(Class(cls_name=cls_name, cls_fee=cls_fee))
         db.session.commit()
         flash('{} is successfully added'.format(cls_name))
         return redirect(url_for('list_of_class'))
@@ -199,6 +200,7 @@ def add_student():
         f_name = request.form['f_name']
         std_address = request.form['std_address']
         std_contact = request.form['std_contact']
+        gender = request.form['gender']
         stdclass = request.form['stdclass']
 
         if stdclass == 'Open this select class':
@@ -211,6 +213,7 @@ def add_student():
             f_name=f_name,
             std_address=std_address,
             std_contact=std_contact,
+            gender=gender,
             stdclass=classes,
             admin=current_user
                         )
@@ -282,6 +285,7 @@ def update_student(id):
         student.f_name = request.form['f_name']
         student.std_address = request.form['std_address']
         student.std_contact = request.form['std_contact']
+        student.gender = request.form['gender']
 
         std_class = request.form['stdclass']
         if std_class == 'Open this select class':
@@ -422,8 +426,11 @@ def add_teacher():
         email = request.form['email']
         tech_address = request.form['tech_address']
         tech_contact = request.form['tech_contact']
+        gender = request.form['gender']
         admin_id = current_user.id
         tech_subject = request.form['tech_subject']
+        salary = request.form['salary']
+
         if tech_subject == 'Open this select subject':
             flash('Please etner subject!')
             return redirect(url_for('add_teacher')) 
@@ -433,6 +440,8 @@ def add_teacher():
             email=email, 
             tech_address=tech_address,
             tech_contact=tech_contact,
+            gender=gender,
+            salary=salary,
             admin_id=admin_id,
             tech_subject=tech_subject
             )
@@ -505,12 +514,15 @@ def update_teacher(id):
         teacher.email = request.form['email']
         teacher.tech_address = request.form['tech_address']
         teacher.tech_contact = request.form['tech_contact']
+        teacher.gender = request.form['gender']
+        teacher.salary = request.form['salary']
         teacher.admin_id = current_user.id
         tech_subject =  request.form['tech_subject']
 
         if tech_subject == 'Open this select subject':
             flash('Please etner subject!')
             return redirect(url_for('update_teacher', id=teacher.id))
+
 
         teacher.tech_subject = tech_subject
         db.session.commit()
@@ -795,6 +807,9 @@ def allowed_image(filename):
 
 @app.route('/teacher/upload_lecture', methods=['GET', 'POST'])
 def upload_lecture():
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+
     if request.method == 'POST':
         title = request.form['title']
         lecture = request.form['lecture']
@@ -819,12 +834,18 @@ def upload_lecture():
 
 @app.route('/teacher/preview_lecture/<teacher>')
 def preview_lecture(teacher):
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+
     lectures = UploadLecture.query.filter_by(teacher=teacher).all()
     return render_template('teacher/preview_lecture.html', lectures=lectures)
 
 
 @app.route('/teacher/lecture_detial_view/<id>')
 def lecture_detial_view(id):
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+        
     lecture = UploadLecture.query.filter_by(id=id).first()
     return render_template('teacher/lecture_detial_view.html', lecture=lecture)
 

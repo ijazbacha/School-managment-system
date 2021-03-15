@@ -16,8 +16,9 @@
       <tr>
         <th scope="col">Id</th>
         <th scope="col">Name</th>
+        <th scope="col">Fee</th>
         <th scope="col">Update</th>
-        <th scope="col">Delete</th>
+        <th scope="col">Permanent Delete</th>
       </tr>
     </thead>
     {% for class in classes %}
@@ -25,6 +26,7 @@
       <tr>
         <td> {{ class.id }}</td>
         <td><a href=" {{ url_for('class_wise_student', std_class=class.id)}} "> {{ class.cls_name }} </a></td>
+        <td> {{ class.cls_fee }}</td>
         <td><a href=" {{ url_for('update_class', id=class.id) }} "><button type="submit" class="btn btn-success">Update</button></a></td>
         <!-- Button trigger modal -->
         <td>

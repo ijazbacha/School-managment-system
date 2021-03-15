@@ -33,7 +33,7 @@
           <th scope="col">Address</th>
           <th scope="col">Contact</th>
           <th scope="col">Class</th>
-          <th scope="col">Admin</th>
+          <th scope="col">Gender</th>
           <th scope="col">Profile</th>
         </tr>
       </thead>
@@ -46,7 +46,7 @@
           <td> {{ student.std_address }} </td>
           <td> {{ student.std_contact }} </td>
           <td> <a href=" {{ url_for('class_wise_student', std_class=student.stdclass.id)}} "> {{ student.stdclass.cls_name }} </a></td>
-          <td> {{ student.admin.username }} </td>
+          <td> {{ student.gender|title() }} </td>
           <td> <a href=" {{ url_for('student_profile', id=student.id)}} "> <button type="submit" class="btn btn-success">  Profile </button> </a></td>
         </tr>
       </tbody>

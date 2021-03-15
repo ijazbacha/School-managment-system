@@ -30,10 +30,10 @@
           <th scope="col">Id</th>
           <th scope="col">Name</th>
           <th scope="col">Email</th>
-          <th scope="col">Address</th>
+          <th scope="col">Gender</th>
           <th scope="col">Contact</th>
           <th scope="col">Subject</th>
-          <th scope="col">Admin</th>
+          <th scope="col">Salary</th>
           <th scope="col">Profile</th>
         </tr>
       </thead>
@@ -43,10 +43,10 @@
           <td> {{ teacher.id }}</td>
           <td> {{ teacher.tech_name }} </td>
           <td> {{ teacher.email }} </td>
-          <td> {{ teacher.tech_address }} </td>
+          <td> {{ teacher.gender }} </td>
           <td> {{ teacher.tech_contact }} </td>
           <td>  {{ teacher.sub.sub_name }} </td>
-          <td> {{ teacher.admin.username }} </td>
+          <td> {{ teacher.salary }} </td>
           <td> <a href=" {{ url_for('teacher_profile', id=teacher.id) }} "> <button type="submit" class="btn btn-success">  Profile </button> </a></td>
         </tr>
       </tbody>

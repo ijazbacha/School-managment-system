@@ -41,6 +41,7 @@ def load_user(id):
 class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cls_name = db.Column(db.String(64), index=True)
+    cls_fee = db.Column(db.String(64))
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     student = db.relationship('Student', backref='stdclass')
     leavestudent = db.relationship('LeaveStudent', backref='stdclass')
@@ -55,6 +56,7 @@ class Student(db.Model):
     f_name = db.Column(db.String(64), index=True)
     std_address = db.Column(db.String(128), index=True)
     std_contact = db.Column(db.String(64), index=True)
+    gender = db.Column(db.String(64))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -68,6 +70,7 @@ class LeaveStudent(db.Model):
     f_name = db.Column(db.String(64), index=True)
     std_address = db.Column(db.String(128), index=True)
     std_contact = db.Column(db.String(64), index=True)
+    gender = db.Column(db.String(64))
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -92,6 +95,8 @@ class Teacher(db.Model):
     email = db.Column(db.String(64), index=True)
     tech_address = db.Column(db.String(128), index=True)
     tech_contact = db.Column(db.String(64), index=True)
+    gender = db.Column(db.String(64))
+    salary = db.Column(db.String(64))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
@@ -118,9 +123,10 @@ class LeaveTeacher(db.Model):
 class UploadLecture(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64))
-    lecture = db.Column(db.String(64))
+    lecture = db.Column(db.Text)
     img = db.Column(db.LargeBinary)
     img_name = db.Column(db.String(64))
+    upload_date = db.Column(db.DateTime, default=datetime.utcnow())
     teacher = db.Column(db.Integer, db.ForeignKey('teacher.id'))
 
 

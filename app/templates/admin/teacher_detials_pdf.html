@@ -22,11 +22,11 @@
               <th scope="col">Id</th>
               <th scope="col">Name</th>
               <th scope="col">Email</th>
-              <th scope="col">Address</th>
+              <th scope="col">Gender</th>
               <th scope="col">Contact</th>
-              <th scope="col">LeaveDate</th>
+              <th scope="col">JoinDate</th>
               <th scope="col">Subject</th>
-              <th scope="col">Admin</th>
+              <th scope="col">Salary</th>
             </tr>
           </thead>
           {% for teacher in teachers %}
@@ -35,11 +35,11 @@
               <td> {{ teacher.id }}</td>
               <td> {{ teacher.tech_name }} </td>
               <td> {{ teacher.email }} </td>
-              <td> {{ teacher.tech_address }} </td>
+              <td> {{ teacher.gender }} </td>
               <td> {{ teacher.tech_contact }} </td>
               <td> {{ teacher.join_date.strftime('%Y-%m-%d') }} </td>
               <td> {{ teacher.sub.sub_name }} </td>
-              <td> {{ teacher.admin.username }} </td>
+              <td> {{ teacher.salary }} </td>
             </tr>
           </tbody>
           {% endfor %}

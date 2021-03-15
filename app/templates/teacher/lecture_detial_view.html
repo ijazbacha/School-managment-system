@@ -17,9 +17,7 @@
             height: auto;
         }
 
-        p {
-            text-indent: 50px;
-        }
+        
 
         
     </style>
@@ -38,6 +36,7 @@
 
     <div class="container">
        <img src="/static/image/{{lecture.img_name}}" class="responsive" alt="lecture pic">
+       <p class="What is Lorem Ipsum?"><small class="text-muted">Lecture upload on {{ lecture.upload_date.strftime('%Y-%m-%d') }}</small></p>
        <h1 class="mt-2">{{lecture.title.title()}}</h1>
        <p class="text-capitalize text-justify">{{lecture.lecture|safe}}</p>
     </div>

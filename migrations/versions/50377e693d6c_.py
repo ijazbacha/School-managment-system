@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 7c6fa6a225c1
+Revision ID: 50377e693d6c
 Revises: 
-Create Date: 2021-03-11 21:09:00.029751
+Create Date: 2021-03-15 12:19:14.745312
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7c6fa6a225c1'
+revision = '50377e693d6c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -31,6 +31,7 @@ def upgrade():
     op.create_table('class',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('cls_name', sa.String(length=64), nullable=True),
+    sa.Column('cls_fee', sa.String(length=64), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['admin_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -75,6 +76,7 @@ def upgrade():
     sa.Column('f_name', sa.String(length=64), nullable=True),
     sa.Column('std_address', sa.String(length=128), nullable=True),
     sa.Column('std_contact', sa.String(length=64), nullable=True),
+    sa.Column('gender', sa.String(length=64), nullable=True),
     sa.Column('leave_date', sa.DateTime(), nullable=True),
     sa.Column('std_class', sa.Integer(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
@@ -109,6 +111,7 @@ def upgrade():
     sa.Column('f_name', sa.String(length=64), nullable=True),
     sa.Column('std_address', sa.String(length=128), nullable=True),
     sa.Column('std_contact', sa.String(length=64), nullable=True),
+    sa.Column('gender', sa.String(length=64), nullable=True),
     sa.Column('join_date', sa.DateTime(), nullable=True),
     sa.Column('std_class', sa.Integer(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
@@ -126,6 +129,8 @@ def upgrade():
     sa.Column('email', sa.String(length=64), nullable=True),
     sa.Column('tech_address', sa.String(length=128), nullable=True),
     sa.Column('tech_contact', sa.String(length=64), nullable=True),
+    sa.Column('gender', sa.String(length=64), nullable=True),
+    sa.Column('salary', sa.String(length=64), nullable=True),
     sa.Column('join_date', sa.DateTime(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.Column('tech_subject', sa.Integer(), nullable=True),
@@ -140,9 +145,10 @@ def upgrade():
     op.create_table('upload_lecture',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=64), nullable=True),
-    sa.Column('lecture', sa.String(length=64), nullable=True),
+    sa.Column('lecture', sa.Text(), nullable=True),
     sa.Column('img', sa.LargeBinary(), nullable=True),
     sa.Column('img_name', sa.String(length=64), nullable=True),
+    sa.Column('upload_date', sa.DateTime(), nullable=True),
     sa.Column('teacher', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['teacher'], ['teacher.id'], ),
     sa.PrimaryKeyConstraint('id')

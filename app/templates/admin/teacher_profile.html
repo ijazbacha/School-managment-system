@@ -10,9 +10,11 @@
     <p><b> Email: </b><span style="float: right; text-align: justify;"> {{ teacher.email }} </span></p>
     <p><b> Address: </b> <span style="float: right;">{{ teacher.tech_address }} </span></p>
     <p><b> Contact: </b> <span style="float: right;">{{ teacher.tech_contact }} </span></p>
+    <p><b> Gender: </b> <span style="float: right;">{{ teacher.gender }} </span></p>
+    <p><b> Salary: </b> <span style="float: right;">{{ teacher.salary }} </span></p>
     <p><b> Subject: </b> <span style="float: right;">{{ teacher.sub.sub_name }}</span> </p>
     <p><b> Join Date: </b> <span style="float: right;">{{ teacher.join_date.strftime('%Y-%m-%d') }} </span></p>
-    
+    <p><b> Admin: </b> <span style="float: right;">{{ teacher.admin.username }} </span></p>
     
     <a href=" {{ url_for('update_teacher', id=teacher.id) }} "><button type="submit" class="btn btn-success">Update</button></a>
     

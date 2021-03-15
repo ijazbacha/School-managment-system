@@ -25,7 +25,7 @@
             <th scope="col">Address</th>
             <th scope="col">Contact</th>
             <th scope="col">Class</th>
-            <th scope="col">Admin</th>
+            <th scope="col">Gender</th>
           </tr>
         </thead>
         {% for student in students %}
@@ -37,7 +37,7 @@
             <td> {{ student.std_address }} </td>
             <td> {{ student.std_contact }} </td>
             <td>  {{ student.stdclass.cls_name }} </a></td>
-            <td> {{ student.admin.username }} </td>
+            <td> {{ student.gender|title() }} </td>
           </tr>
         </tbody>
         {% endfor %}

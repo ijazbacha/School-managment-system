@@ -52,7 +52,7 @@
                         <img src="/static/image/{{lecture.img_name}}" class="card-img-top" alt="..." width="100%" height="200px">
                         <div class="card-body">
                           <h5 class="card-title"><b>{{lecture.title|truncate(20)|title()}}</b></h5>
-                          <p class="card-text">{{lecture.lecture|safe|truncate(40)}}.</p>
+                          <p class="card-text">{{lecture.lecture|safe|truncate(60)}}.</p>
                           <a href=" {{ url_for('lecture_detial_view', id=lecture.id) }} " class="btn btn-primary ms-2">View Lecture</a>
                           <a href="#" class="btn btn-success">Update</a>
                         </div>

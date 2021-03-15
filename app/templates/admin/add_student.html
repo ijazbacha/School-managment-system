@@ -7,21 +7,65 @@
 <h1>Student Form</h1>
 <form method="POST">
     <div class="mb-3">
-      <label for="Inputname" class="form-label">Student Name:</label>
-      <input type="text" class="form-control" name="std_name" value="{{student.std_name}}" id="Inputname" placeholder="enter name" required>
+      <label for="Inputname" class="form-label">Student Name</label>
+      <input type="text" class="form-control" name="std_name" value="{{student.std_name}}" id="Inputname" placeholder="Enter student name" required>
     </div>
     <div class="mb-3">
-        <label for="Inputname" class="form-label">Father Name:</label>
-        <input type="text" class="form-control" name="f_name" value="{{student.f_name}}" id="Inputname" placeholder="enter name" required>
+        <label for="Inputname" class="form-label">Father Name</label>
+        <input type="text" class="form-control" name="f_name" value="{{student.f_name}}" id="Inputname" placeholder="Enter father name" required>
     </div>
     <div class="mb-3">
-        <label for="Inputaddress" class="form-label">Student Address:</label>
-        <input type="text" class="form-control" name="std_address" value="{{student.std_address}}" id="Inputaddress" placeholder="enter address" required>
+        <label for="Inputaddress" class="form-label">Student Address</label>
+        <input type="text" class="form-control" name="std_address" value="{{student.std_address}}" id="Inputaddress" placeholder="Enter address" required>
     </div>
     <div class="mb-3">
-        <label for="Inputcontact" class="form-label">Student Contact:</label>
-        <input type="tel" class="form-control" name="std_contact" value="{{student.std_contact}}" id="Inputcontact" placeholder="enter contact" required>
+        <label for="Inputcontact" class="form-label">Student Contact</label>
+        <input type="tel" class="form-control" name="std_contact" value="{{student.std_contact}}" id="Inputcontact" placeholder="Enter contact" required>
     </div>
+    <label for="Inputcontact" class="form-label">Gender</label>
+    {% if student %}
+    {% if student.gender == 'Male' %}
+    <div class="mb-3">
+      <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1" checked>
+      <label class="form-check-label" for="flexRadioDefault1">
+        Male
+      </label>
+    </div>
+    <div class="mb-3">
+      <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2">
+      <label class="form-check-label" for="flexRadioDefault2">
+        Female
+      </label>
+    </div>
+      {% else %}
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1" checked>
+        <label class="form-check-label" for="flexRadioDefault1">
+          Male
+        </label>
+      </div>
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2" checked>
+        <label class="form-check-label" for="flexRadioDefault2">
+          Female
+        </label>
+      </div>
+      
+      {% endif %}
+      {% else %}
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1">
+        <label class="form-check-label" for="flexRadioDefault1">
+          Male
+        </label>
+      </div>
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2">
+        <label class="form-check-label" for="flexRadioDefault2">
+          Female
+        </label>
+      </div>
+    {% endif %}
     <div class="mb-3">
         <select class="form-select" name="stdclass"  aria-label="Default select example">
             <option selected>Open this select class</option>
@@ -30,8 +74,11 @@
             {% endfor %}
           </select>
     </div>
-    
+    {% if student %}
+    <button type="submit" class="btn btn-success">Update Student</button>
+    {% else %}
     <button type="submit" class="btn btn-success">Add Student</button>
+    {% endif %}
   </form>
 </div>
 

@@ -7,21 +7,68 @@
 <h1>Teacher Form</h1>
 <form method="POST">
     <div class="mb-3">
-      <label for="Inputname" class="form-label">Name:</label>
+      <label for="Inputname" class="form-label">Name</label>
       <input type="text" class="form-control" name="tech_name" value="{{teacher.tech_name}}" id="Inputname" placeholder="Enter name" required>
     </div>
     <div class="mb-3">
-        <label for="Inputname" class="form-label">Email:</label>
+        <label for="Inputname" class="form-label">Email</label>
         <input type="email" class="form-control" name="email" value="{{teacher.email}}" id="Inputname" placeholder="Enter email" required>
     </div>
     <div class="mb-3">
-        <label for="Inputaddress" class="form-label">Address:</label>
+        <label for="Inputaddress" class="form-label">Address</label>
         <input type="text" class="form-control" name="tech_address" value="{{teacher.tech_address}}" id="Inputaddress" placeholder="Enter address" required>
     </div>
     <div class="mb-3">
         <label for="Inputcontact" class="form-label">Contact:</label>
         <input type="tel" class="form-control" name="tech_contact" value="{{teacher.tech_contact}}" id="Inputcontact" placeholder="Enter contact" required>
     </div>
+    <label for="Inputcontact" class="form-label">Gender</label>
+    {% if teacher %}
+    {% if teacher.gender == 'Male' %}
+    <div class="mb-3">
+      <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1" checked>
+      <label class="form-check-label" for="flexRadioDefault1">
+        Male
+      </label>
+    </div>
+    <div class="mb-3">
+      <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2">
+      <label class="form-check-label" for="flexRadioDefault2">
+        Female
+      </label>
+    </div>
+      {% else %}
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2" checked>
+        <label class="form-check-label" for="flexRadioDefault2">
+          Female
+        </label>
+      </div>
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1" checked>
+        <label class="form-check-label" for="flexRadioDefault1">
+          Male
+        </label>
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Male" id="flexRadioDefault1">
+        <label class="form-check-label" for="flexRadioDefault1">
+          Male
+        </label>
+      </div>
+      <div class="mb-3">
+        <input class="form-check-input" type="radio" name="gender" value="Female" id="flexRadioDefault2">
+        <label class="form-check-label" for="flexRadioDefault2">
+          Female
+        </label>
+      </div>
+    {% endif %}
+  <div class="mb-3">
+    <label for="salary" class="form-label">Salary</label>
+    <input type="text" class="form-control" name="salary" value="{{teacher.salary}}" id="Inputname" placeholder="Enter Salary" required>
+  </div>
     <div class="mb-3">
         <select class="form-select" name="tech_subject"  aria-label="Default select example">
             <option selected>Open this select subject</option>
@@ -30,8 +77,11 @@
             {% endfor %}
           </select>
     </div>
-    
+    {% if teacher %}
+    <button type="submit" class="btn btn-success">Update Teacher</button>
+    {% else %}
     <button type="submit" class="btn btn-success">Add Teacher</button>
+    {% endif %}
   </form>
 </div>
 
