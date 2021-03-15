@@ -758,6 +758,7 @@ def before_request():
 def teacher_login():
     if g.user:
         return redirect(url_for('teacher_index'))
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -852,6 +853,9 @@ def lecture_detial_view(id):
 
 @app.route('/teacher/update_lecture/<id>', methods=['GET', 'POST'])
 def update_lecture(id=id):
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+
     lecture = UploadLecture.query.filter_by(id=id).first()
     if request.method == 'POST':
         lecture.title = request.form['title']
@@ -860,14 +864,15 @@ def update_lecture(id=id):
         
         if image.filename == '':
             flash('Please upload image!')
+            return redirect(url_for('update_lecture', id=id))
 
         if allowed_image(image.filename):
             filename = secure_filename(image.filename)
             lecture.img_name = filename
             image.save(os.path.join(app.config['IMAGE_UPLOADS'], filename))
 
-        db.session.commit()
-        return redirect(url_for('preview_lecture', teacher=g.user.id))
+            db.session.commit()
+            return redirect(url_for('preview_lecture', teacher=g.user.id))
             
     return render_template('teacher/add_lecture.html', lecture=lecture)
 
@@ -882,16 +887,46 @@ def update_lecture(id=id):
 
 #------------- Student -----------------#
 
-@app.route('/teacher/student_login', methods=['GET', 'POST'])
+
+@app.before_request
+def std_before_request():
+    g.std_user = None
+    if 'student_id' in session:
+        std_user = Student.query.filter_by(id=session['student_id']).first()
+        g.std_user = std_user
+
+
+
+@app.route('/student/student_login', methods=['GET', 'POST'])
 def student_login():
+    if g.std_user:
+        return redirect(url_for('student_index')) 
+
     if request.method == 'POST':
-        return redirect(url_for('student_index'))
+        username = request.form['username']
+        password = request.form['password']
+
+        std_user = Student.query.filter_by(std_name=username).first()
+        if std_user and std_user.std_contact == password:
+            session['student_id'] = std_user.id
+            flash('Successfully login!')
+            return redirect(url_for('student_index'))
+
+        flash('Invild username or password!')
+        return redirect(url_for('student_login'))
     return render_template('student/student_login.html', title='Student Login')
 
+
+@app.route('/student/student_logout')
+def student_logout():
+    session.pop('student_id', None)
+    return redirect(url_for('student_login'))
 
 
 @app.route('/student/student_index')
 def student_index():
+    if not g.std_user:
+        return redirect(url_for('student_login'))
     return render_template('student/index.html', title='Home')
 
 #------------- End Student -------------#
