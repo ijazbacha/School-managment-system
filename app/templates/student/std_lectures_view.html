@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>Lecture Preview</title>
+    <style>
+        
+        body {
+        font-family: 'Courier New', Courier, monospace;
+         }
+
+        .box {
+            background-color: rgba(225, 225, 225, 0.5);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 2px 2px 20px 0px rgba(0,0,0,0.75);
+            -webkit-box-shadow: 2px 2px 20px 0px rgba(0,0,0,0.75);
+            -moz-box-shadow: 2px 2px 20px 0px rgba(0,0,0,0.75);
+        }
+
+        .card {
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Info!</strong> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="container-fluid mt-4">
+        <div class="box">
+            <h1>
+                Lectures
+            </h1>
+        </div>
+        
+            <hr>
+            {% if lectures %}
+                {% for lecture in lectures %}
+                    <div class="card mt-4 ms-4" style="width: 18rem;">
+                        <img src="/static/image/{{lecture.img_name}}" class="card-img-top" alt="..." width="100%" height="200px">
+                        <div class="card-body">
+                          <h5 class="card-title"><b>{{lecture.title|truncate(20)|title()}}</b></h5>
+                          <p class="card-text">{{lecture.lecture|safe|truncate(60)}}.</p>
+                          <div class="d-grid gap-2">
+                          <a href=" {{ url_for('std_lecture_detial_view', id=lecture.id) }} " class="btn btn-primary ms-2">View Lecture</a>
+                          </div>
+                        </div>
+                      </div>
+                {% endfor %}
+            {% else %}
+            <h1>No Lecture Found!</h1>
+            <a href=" {{ url_for('teacher_index') }} "><p>Go Back to the previous page.</p></a>
+            {% endif %}
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</body>
+</html>
