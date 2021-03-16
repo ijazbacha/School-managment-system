@@ -310,6 +310,7 @@ def leave_student(id):
     f_name = student.f_name
     std_address = student.std_address
     std_contact = student.std_contact
+    gender = student.gender
     leave_date = student.join_date
     std_class = student.stdclass.id
     admin_id = current_user.id
@@ -318,6 +319,7 @@ def leave_student(id):
         f_name=f_name,
         std_address=std_address,
         std_contact=std_contact,
+        gender=gender,
         leave_date=leave_date,
         std_class=std_class,
         admin_id=admin_id
@@ -421,6 +423,7 @@ def delete_subject(id):
 @app.route('/admin/add_teacher', methods=['GET', 'POST'])
 @login_required
 def add_teacher():
+    classes = Class.query.all()
     subjects = Subject.query.all()
     if request.method == 'POST':
         tech_name = request.form['tech_name']
@@ -431,10 +434,17 @@ def add_teacher():
         admin_id = current_user.id
         tech_subject = request.form['tech_subject']
         salary = request.form['salary']
+        tech_class = request.form['stdclass']
 
         if tech_subject == 'Open this select subject':
             flash('Please etner subject!')
             return redirect(url_for('add_teacher')) 
+
+        if tech_class == 'Open this select class':
+            flash('Please etner class!')
+            return redirect(url_for('add_teacher')) 
+
+
         #tech_subject = Subject.query.filter_by(id=tech_subject.id).first()
         teacher = Teacher(
             tech_name=tech_name, 
@@ -444,14 +454,15 @@ def add_teacher():
             gender=gender,
             salary=salary,
             admin_id=admin_id,
-            tech_subject=tech_subject
+            tech_subject=tech_subject,
+            tech_class=tech_class
             )
         db.session.add(teacher)
         db.session.commit()
         flash('{} teacher is successfully added!'.format(tech_name))
         return redirect(url_for('teacher_detials'))
 
-    return render_template('admin/add_teacher.html', title='Add Teacher', subjects=subjects, teacher=None)
+    return render_template('admin/add_teacher.html', title='Add Teacher', subjects=subjects, classes=classes, teacher=None)
 
 
 @app.route('/admin/teacher_detials')
@@ -541,6 +552,8 @@ def leave_teacher(id):
         email = teacher.email
         tech_address = teacher.tech_address
         tech_contact = teacher.tech_contact
+        gender = teacher.gender
+        salary = teacher.salary
         admin_id = current_user.id
         tech_subject = teacher.tech_subject
         l_teacher = LeaveTeacher(
@@ -548,6 +561,8 @@ def leave_teacher(id):
             email=email,
             tech_address=tech_address,
             tech_contact=tech_contact,
+            gender=gender,
+            salary=salary,
             admin_id=admin_id,
             tech_subject=tech_subject
             )
@@ -782,11 +797,29 @@ def teacher_logout():
 
 
 
-@app.route('/teacher/teacher_index')
+@app.route('/teacher/teacher_index', methods=['GET', 'POST'])
 def teacher_index():
     if not g.user:
         return redirect(url_for('teacher_login'))
-    return render_template('teacher/index.html', title='Home')
+
+    subjects = Subject.query.all()
+    classes = Class.query.all()
+    if request.method == 'POST':
+        tech_subject = request.form.get('tech_subject')
+        tech_class = request.form.get('stdclass')
+        teacher = g.user.id
+
+        if tech_subject == 'Open this select subject':
+            flash('Please select subject!')
+            return redirect(url_for('teacher_index'))
+
+        if tech_class == 'Open this select class':
+            flash('Please select class')
+            return redirect(url_for('teacher_index'))
+
+        return redirect(url_for('lectures_view', tech_subject=tech_subject, tech_class=tech_class, teacher=teacher))
+    
+    return render_template('teacher/index.html', title='Home', subjects=subjects, classes=classes)
 
 
 
@@ -812,10 +845,24 @@ def upload_lecture():
     if not g.user:
         return redirect(url_for('teacher_login'))
 
+    subjects = Subject.query.all()
+    classes = Class.query.all()
     if request.method == 'POST':
         title = request.form['title']
         lecture = request.form['lecture']
         teacher = g.user.id
+        tech_subject = request.form['tech_subject']
+        tech_class = request.form['stdclass']
+
+        if tech_subject == 'Open this select subject':
+            flash('Please select subject!')
+            return redirect(url_for('upload_lecture'))
+
+        if tech_class == 'Open this select class':
+            flash('Please select class')
+            return redirect(url_for('upload_lecture'))
+
+
 
         img = request.files['image']
         if img.filename == '':
@@ -824,23 +871,33 @@ def upload_lecture():
         if allowed_image(img.filename):
             filename = secure_filename(img.filename)
             img.save(os.path.join(app.config["IMAGE_UPLOADS"], filename))
-            new_lecture = UploadLecture(title=title, lecture=lecture, teacher=teacher, img=img.read(), img_name=filename)
+            new_lecture = UploadLecture(
+                title=title, 
+                lecture=lecture, 
+                teacher=teacher, 
+                img=img.read(), 
+                img_name=filename,
+                tech_subject=tech_subject,
+                tech_class=tech_class
+                )
             db.session.add(new_lecture)
             db.session.commit()
             flash('Successfully upload!')
-            return redirect(url_for('preview_lecture', teacher=g.user.id))
+            return redirect(url_for('lectures_view', tech_subject=tech_subject, tech_class=tech_class, teacher=teacher))
           
-    return render_template('teacher/add_lecture.html', lecture=None)
+    return render_template('teacher/add_lecture.html', subjects=subjects, classes=classes, lecture=None)
 
 
 
-@app.route('/teacher/preview_lecture/<teacher>')
-def preview_lecture(teacher):
-    if not g.user:
-        return redirect(url_for('teacher_login'))
 
-    lectures = UploadLecture.query.filter_by(teacher=teacher).all()
+
+@app.route('/teacher/lectures_view/<tech_subject>/<tech_class>/<teacher>', methods=['GET', 'POST'])
+def lectures_view(tech_subject, tech_class, teacher):
+    lectures = UploadLecture.query.filter_by(tech_subject=tech_subject, tech_class=tech_class, teacher=teacher).all()
     return render_template('teacher/preview_lecture.html', lectures=lectures)
+
+
+
 
 
 @app.route('/teacher/lecture_detial_view/<id>')
@@ -851,15 +908,34 @@ def lecture_detial_view(id):
     lecture = UploadLecture.query.filter_by(id=id).first()
     return render_template('teacher/lecture_detial_view.html', lecture=lecture)
 
+
+
 @app.route('/teacher/update_lecture/<id>', methods=['GET', 'POST'])
 def update_lecture(id=id):
     if not g.user:
         return redirect(url_for('teacher_login'))
 
+    subjects = Subject.query.all()
+    classes = Class.query.all()
     lecture = UploadLecture.query.filter_by(id=id).first()
     if request.method == 'POST':
         lecture.title = request.form['title']
         lecture.lecture = request.form['lecture']
+        tech_subject = request.form['tech_subject']
+        tech_class = request.form['stdclass']
+        lecture.teacher = g.user.id
+
+        if tech_subject == 'Open this select subject':
+            flash('Please select subject!')
+            return redirect(url_for('upload_lecture'))
+
+        if tech_class == 'Open this select class':
+            flash('Please select class')
+            return redirect(url_for('upload_lecture'))
+
+        lecture.tech_subject = tech_subject
+        lecture.tech_class = tech_class
+
         image = request.files['image']
         
         if image.filename == '':

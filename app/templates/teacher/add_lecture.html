@@ -44,12 +44,33 @@
               <label for="lecture" class="form-label">Enter Lecture</label>
              <!-- {{ ckeditor.create() }}-->
                <textarea class="form-control rounded-0" name="lecture" id="lecture" placeholder="Enter Lecture" rows="7" required>{{lecture.lecture}}</textarea>
-            
             </div>
+
+            <div class="mb-3">
+                <select class="form-select" name="tech_subject"  aria-label="Default select example">
+                    <option selected>Open this select subject</option>
+                    {% for subject in subjects %}
+                    <option value="{{ subject.id }}">{{ subject }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="mb-3">
+              <select class="form-select" name="stdclass"  aria-label="Default select example">
+                  <option selected>Open this select class</option>
+                  {% for class in classes %}
+                  <option value="{{ class.id }}">{{ class }}</option>
+                  {% endfor %}
+              </select>
+            </div>
+
+
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload Image</label>
                 <input class="form-control" type="file" name="image" id="formFile">
             </div>
+
+
             {% if lecture %}
             <button type="submit" class="btn btn-success">Update</button>
             {% else %}

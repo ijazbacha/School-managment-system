@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 50377e693d6c
+Revision ID: 8631dcbc3197
 Revises: 
-Create Date: 2021-03-15 12:19:14.745312
+Create Date: 2021-03-16 09:39:59.390157
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '50377e693d6c'
+revision = '8631dcbc3197'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,10 +24,10 @@ def upgrade():
     sa.Column('email', sa.String(length=64), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('join_date', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('username')
     )
-    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
-    op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('class',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('cls_name', sa.String(length=64), nullable=True),
@@ -36,7 +36,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['admin_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_class_cls_name'), 'class', ['cls_name'], unique=False)
     op.create_table('leave_worker',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('leave_worker_name', sa.String(length=64), nullable=True),
@@ -47,9 +46,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['admin_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_leave_worker_leave_worker_address'), 'leave_worker', ['leave_worker_address'], unique=False)
-    op.create_index(op.f('ix_leave_worker_leave_worker_contact'), 'leave_worker', ['leave_worker_contact'], unique=False)
-    op.create_index(op.f('ix_leave_worker_leave_worker_name'), 'leave_worker', ['leave_worker_name'], unique=False)
     op.create_table('subject',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('sub_name', sa.String(length=64), nullable=True),
@@ -67,9 +63,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['admin_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_worker_worker_address'), 'worker', ['worker_address'], unique=False)
-    op.create_index(op.f('ix_worker_worker_contact'), 'worker', ['worker_contact'], unique=False)
-    op.create_index(op.f('ix_worker_worker_name'), 'worker', ['worker_name'], unique=False)
     op.create_table('leave_student',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('std_name', sa.String(length=64), nullable=True),
@@ -84,16 +77,14 @@ def upgrade():
     sa.ForeignKeyConstraint(['std_class'], ['class.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_leave_student_f_name'), 'leave_student', ['f_name'], unique=False)
-    op.create_index(op.f('ix_leave_student_std_address'), 'leave_student', ['std_address'], unique=False)
-    op.create_index(op.f('ix_leave_student_std_contact'), 'leave_student', ['std_contact'], unique=False)
-    op.create_index(op.f('ix_leave_student_std_name'), 'leave_student', ['std_name'], unique=False)
     op.create_table('leave_teacher',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('tech_name', sa.String(length=64), nullable=True),
     sa.Column('email', sa.String(length=64), nullable=True),
     sa.Column('tech_address', sa.String(length=128), nullable=True),
     sa.Column('tech_contact', sa.String(length=64), nullable=True),
+    sa.Column('gender', sa.String(length=64), nullable=True),
+    sa.Column('salary', sa.String(length=64), nullable=True),
     sa.Column('leave_date', sa.DateTime(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.Column('tech_subject', sa.Integer(), nullable=True),
@@ -101,10 +92,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['tech_subject'], ['subject.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_leave_teacher_email'), 'leave_teacher', ['email'], unique=False)
-    op.create_index(op.f('ix_leave_teacher_tech_address'), 'leave_teacher', ['tech_address'], unique=False)
-    op.create_index(op.f('ix_leave_teacher_tech_contact'), 'leave_teacher', ['tech_contact'], unique=False)
-    op.create_index(op.f('ix_leave_teacher_tech_name'), 'leave_teacher', ['tech_name'], unique=False)
     op.create_table('student',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('std_name', sa.String(length=64), nullable=True),
@@ -119,10 +106,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['std_class'], ['class.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_student_f_name'), 'student', ['f_name'], unique=False)
-    op.create_index(op.f('ix_student_std_address'), 'student', ['std_address'], unique=False)
-    op.create_index(op.f('ix_student_std_contact'), 'student', ['std_contact'], unique=False)
-    op.create_index(op.f('ix_student_std_name'), 'student', ['std_name'], unique=False)
     op.create_table('teacher',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('tech_name', sa.String(length=64), nullable=True),
@@ -134,14 +117,12 @@ def upgrade():
     sa.Column('join_date', sa.DateTime(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.Column('tech_subject', sa.Integer(), nullable=True),
+    sa.Column('tech_class', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['admin_id'], ['user.id'], ),
+    sa.ForeignKeyConstraint(['tech_class'], ['class.id'], ),
     sa.ForeignKeyConstraint(['tech_subject'], ['subject.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_teacher_email'), 'teacher', ['email'], unique=False)
-    op.create_index(op.f('ix_teacher_tech_address'), 'teacher', ['tech_address'], unique=False)
-    op.create_index(op.f('ix_teacher_tech_contact'), 'teacher', ['tech_contact'], unique=False)
-    op.create_index(op.f('ix_teacher_tech_name'), 'teacher', ['tech_name'], unique=False)
     op.create_table('upload_lecture',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(length=64), nullable=True),
@@ -150,7 +131,11 @@ def upgrade():
     sa.Column('img_name', sa.String(length=64), nullable=True),
     sa.Column('upload_date', sa.DateTime(), nullable=True),
     sa.Column('teacher', sa.Integer(), nullable=True),
+    sa.Column('tech_subject', sa.Integer(), nullable=True),
+    sa.Column('tech_class', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['teacher'], ['teacher.id'], ),
+    sa.ForeignKeyConstraint(['tech_class'], ['class.id'], ),
+    sa.ForeignKeyConstraint(['tech_subject'], ['subject.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
@@ -159,38 +144,13 @@ def upgrade():
 def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('upload_lecture')
-    op.drop_index(op.f('ix_teacher_tech_name'), table_name='teacher')
-    op.drop_index(op.f('ix_teacher_tech_contact'), table_name='teacher')
-    op.drop_index(op.f('ix_teacher_tech_address'), table_name='teacher')
-    op.drop_index(op.f('ix_teacher_email'), table_name='teacher')
     op.drop_table('teacher')
-    op.drop_index(op.f('ix_student_std_name'), table_name='student')
-    op.drop_index(op.f('ix_student_std_contact'), table_name='student')
-    op.drop_index(op.f('ix_student_std_address'), table_name='student')
-    op.drop_index(op.f('ix_student_f_name'), table_name='student')
     op.drop_table('student')
-    op.drop_index(op.f('ix_leave_teacher_tech_name'), table_name='leave_teacher')
-    op.drop_index(op.f('ix_leave_teacher_tech_contact'), table_name='leave_teacher')
-    op.drop_index(op.f('ix_leave_teacher_tech_address'), table_name='leave_teacher')
-    op.drop_index(op.f('ix_leave_teacher_email'), table_name='leave_teacher')
     op.drop_table('leave_teacher')
-    op.drop_index(op.f('ix_leave_student_std_name'), table_name='leave_student')
-    op.drop_index(op.f('ix_leave_student_std_contact'), table_name='leave_student')
-    op.drop_index(op.f('ix_leave_student_std_address'), table_name='leave_student')
-    op.drop_index(op.f('ix_leave_student_f_name'), table_name='leave_student')
     op.drop_table('leave_student')
-    op.drop_index(op.f('ix_worker_worker_name'), table_name='worker')
-    op.drop_index(op.f('ix_worker_worker_contact'), table_name='worker')
-    op.drop_index(op.f('ix_worker_worker_address'), table_name='worker')
     op.drop_table('worker')
     op.drop_table('subject')
-    op.drop_index(op.f('ix_leave_worker_leave_worker_name'), table_name='leave_worker')
-    op.drop_index(op.f('ix_leave_worker_leave_worker_contact'), table_name='leave_worker')
-    op.drop_index(op.f('ix_leave_worker_leave_worker_address'), table_name='leave_worker')
     op.drop_table('leave_worker')
-    op.drop_index(op.f('ix_class_cls_name'), table_name='class')
     op.drop_table('class')
-    op.drop_index(op.f('ix_user_username'), table_name='user')
-    op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     # ### end Alembic commands ###

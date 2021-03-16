@@ -47,6 +47,7 @@
         </div>
         
             <hr>
+            {% if lectures %}
                 {% for lecture in lectures %}
                     <div class="card mt-4 ms-4" style="width: 18rem;">
                         <img src="/static/image/{{lecture.img_name}}" class="card-img-top" alt="..." width="100%" height="200px">
@@ -58,6 +59,10 @@
                         </div>
                       </div>
                 {% endfor %}
+            {% else %}
+            <h1>No Lecture Found!</h1>
+            <a href=" {{ url_for('teacher_index') }} "><p>Go Back to the previous page.</p></a>
+            {% endif %}
     </div>
 
 

@@ -10,8 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(32), unique=True, index=True)
-    email = db.Column(db.String(64), unique=True, index=True)
+    username = db.Column(db.String(32), unique=True)
+    email = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     student = db.relationship('Student', backref='admin')
@@ -40,11 +40,13 @@ def load_user(id):
 
 class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    cls_name = db.Column(db.String(64), index=True)
+    cls_name = db.Column(db.String(64))
     cls_fee = db.Column(db.String(64))
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     student = db.relationship('Student', backref='stdclass')
     leavestudent = db.relationship('LeaveStudent', backref='stdclass')
+    uploadlecture = db.relationship('UploadLecture', backref='stdclass')
+    teacher = db.relationship('Teacher', backref='stdclass')
 
     def __repr__(self):
         return 'Class {}'.format(self.cls_name)
@@ -52,10 +54,10 @@ class Class(db.Model):
 
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    std_name = db.Column(db.String(64), index=True)
-    f_name = db.Column(db.String(64), index=True)
-    std_address = db.Column(db.String(128), index=True)
-    std_contact = db.Column(db.String(64), index=True)
+    std_name = db.Column(db.String(64))
+    f_name = db.Column(db.String(64))
+    std_address = db.Column(db.String(128))
+    std_contact = db.Column(db.String(64))
     gender = db.Column(db.String(64))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
@@ -66,10 +68,10 @@ class Student(db.Model):
 
 class LeaveStudent(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    std_name = db.Column(db.String(64), index=True)
-    f_name = db.Column(db.String(64), index=True)
-    std_address = db.Column(db.String(128), index=True)
-    std_contact = db.Column(db.String(64), index=True)
+    std_name = db.Column(db.String(64))
+    f_name = db.Column(db.String(64))
+    std_address = db.Column(db.String(128))
+    std_contact = db.Column(db.String(64))
     gender = db.Column(db.String(64))
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
@@ -84,6 +86,7 @@ class Subject(db.Model):
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     teacher = db.relationship('Teacher', backref='sub')
     leaveteacher = db.relationship('LeaveTeacher', backref='sub')
+    uploadlecture = db.relationship('UploadLecture', backref='sub')
 
     def __repr__(self):
         return 'Subject {}'.format(self.sub_name)
@@ -91,15 +94,16 @@ class Subject(db.Model):
 
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    tech_name = db.Column(db.String(64), index=True)
-    email = db.Column(db.String(64), index=True)
-    tech_address = db.Column(db.String(128), index=True)
-    tech_contact = db.Column(db.String(64), index=True)
+    tech_name = db.Column(db.String(64))
+    email = db.Column(db.String(64))
+    tech_address = db.Column(db.String(128))
+    tech_contact = db.Column(db.String(64))
     gender = db.Column(db.String(64))
     salary = db.Column(db.String(64))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
+    tech_class = db.Column(db.Integer, db.ForeignKey('class.id'))
     uploadlecture = db.relationship('UploadLecture', backref='t_lecture')
 
     def __repr__(self):
@@ -108,10 +112,12 @@ class Teacher(db.Model):
 
 class LeaveTeacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    tech_name = db.Column(db.String(64), index=True)
-    email = db.Column(db.String(64), index=True)
-    tech_address = db.Column(db.String(128), index=True)
-    tech_contact = db.Column(db.String(64), index=True)
+    tech_name = db.Column(db.String(64))
+    email = db.Column(db.String(64))
+    tech_address = db.Column(db.String(128))
+    tech_contact = db.Column(db.String(64))
+    gender = db.Column(db.String(64))
+    salary = db.Column(db.String(64))
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
@@ -128,6 +134,8 @@ class UploadLecture(db.Model):
     img_name = db.Column(db.String(64))
     upload_date = db.Column(db.DateTime, default=datetime.utcnow())
     teacher = db.Column(db.Integer, db.ForeignKey('teacher.id'))
+    tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
+    tech_class = db.Column(db.Integer, db.ForeignKey('class.id'))
 
 
     def __repr__(self):
@@ -138,9 +146,9 @@ class Worker(db.Model):
     __searchable__ = ['worker_name', 'worker_address']
     
     id = db.Column(db.Integer, primary_key=True)
-    worker_name = db.Column(db.String(64), index=True)
-    worker_address = db.Column(db.String(128), index=True)
-    worker_contact = db.Column(db.String(64), index=True)
+    worker_name = db.Column(db.String(64))
+    worker_address = db.Column(db.String(128))
+    worker_contact = db.Column(db.String(64))
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -150,9 +158,9 @@ class Worker(db.Model):
 
 class LeaveWorker(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    leave_worker_name = db.Column(db.String(64), index=True)
-    leave_worker_address = db.Column(db.String(128), index=True)
-    leave_worker_contact = db.Column(db.String(64), index=True)
+    leave_worker_name = db.Column(db.String(64))
+    leave_worker_address = db.Column(db.String(128))
+    leave_worker_contact = db.Column(db.String(64))
     leave_date = db.Column(db.DateTime, default=datetime.utcnow())
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
