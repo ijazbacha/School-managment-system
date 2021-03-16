@@ -22,6 +22,9 @@ def home():
 
     if g.user:
         return redirect(url_for('teacher_index'))
+
+    if g.std_user:
+        return redirect(url_for('student_index'))
     return render_template('home.html')
 
 #------------ Admin ---------------#
@@ -766,6 +769,7 @@ def before_request():
     if 'teacher_id' in session:
         user = Teacher.query.filter_by(id=session['teacher_id']).first()
         g.user = user
+    
 
 
 
@@ -893,7 +897,13 @@ def upload_lecture():
 
 @app.route('/teacher/lectures_view/<tech_subject>/<tech_class>/<teacher>', methods=['GET', 'POST'])
 def lectures_view(tech_subject, tech_class, teacher):
-    lectures = UploadLecture.query.filter_by(tech_subject=tech_subject, tech_class=tech_class, teacher=teacher).all()
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+
+    lectures = UploadLecture.query.filter_by(
+        tech_subject=tech_subject, 
+        tech_class=tech_class, 
+        teacher=teacher).order_by(UploadLecture.upload_date.desc()).all()
     return render_template('teacher/preview_lecture.html', lectures=lectures)
 
 
@@ -950,7 +960,7 @@ def update_lecture(id=id):
             db.session.commit()
             return redirect(url_for('preview_lecture', teacher=g.user.id))
             
-    return render_template('teacher/add_lecture.html', lecture=lecture)
+    return render_template('teacher/add_lecture.html', lecture=lecture, subjects=subjects, classes=classes)
 
 
 
@@ -999,11 +1009,57 @@ def student_logout():
     return redirect(url_for('student_login'))
 
 
-@app.route('/student/student_index')
+@app.route('/student/student_index', methods=['GET', 'POST'])
 def student_index():
     if not g.std_user:
         return redirect(url_for('student_login'))
-    return render_template('student/index.html')
+    
+    teachers = Teacher.query.all()
+    subjects = Subject.query.all()
+    classes = Class.query.all()
+    if request.method == 'POST':
+        tech_subject = request.form.get('tech_subject')
+        tech_class = request.form.get('stdclass')
+        teacher = request.form.get('teacher')
+
+        if tech_subject == 'Open this select Teacher':
+            flash('Please select subject!')
+            return redirect(url_for('student_index'))
+
+        if tech_subject == 'Open this select subject':
+            flash('Please select subject!')
+            return redirect(url_for('student_index'))
+
+        if tech_class == 'Open this select class':
+            flash('Please select class')
+            return redirect(url_for('student_index'))
+
+        return redirect(url_for('std_lectures_view', tech_subject=tech_subject, tech_class=tech_class, teacher=teacher))
+    
+    return render_template('student/index.html', teachers=teachers, subjects=subjects, classes=classes)
+
+
+@app.route('/student/std_lectures_view/<tech_subject>/<tech_class>/<teacher>', methods=['GET', 'POST'])
+def std_lectures_view(tech_subject, tech_class, teacher):
+    if not g.std_user:
+        return redirect(url_for('student_login'))
+
+    lectures = UploadLecture.query.filter_by(
+        tech_subject=tech_subject, 
+        tech_class=tech_class, 
+        teacher=teacher).order_by(UploadLecture.upload_date.desc()).all()
+    return render_template('student/std_lectures_view.html', lectures=lectures)
+
+
+@app.route('/student/std_lecture_detial_view/<id>')
+def std_lecture_detial_view(id):
+    if not g.std_user:
+        return redirect(url_for('student_login'))
+        
+    lecture = UploadLecture.query.filter_by(id=id).first()
+    return render_template('student/std_lecture_detial_view.html', lecture=lecture)
+
+
 
 #------------- End Student -------------#
 

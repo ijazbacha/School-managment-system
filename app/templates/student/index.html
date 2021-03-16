@@ -48,12 +48,59 @@
             <p><b> Join Date: </b> <span style="float: right;">{{ g.std_user.join_date.strftime('%Y-%m-%d') }} </span></p>
         </div>
         <div class="button">
-            <a href="  "><button type="submit" class="btn btn-secondary">View Lectures</button></a>
+            <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                View Lectures
+            </button>
             <a href="  "><button type="submit" class="btn btn-secondary">View Attendance</button></a>
         </div>
     </div>
 
+     <!-- Modal -->
+     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="" method="POST">
+                <div class="modal-header">
+                <h5 class="modal-title text-warning" id="exampleModalLabel"> <b style="color: black;">{{ g.std_user.std_name.title() }}</b> Please fill the following option  </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
+                    <div class="mb-3">
+                        <select class="form-select" name="teacher"  aria-label="Default select example">
+                            <option selected>Open this select Teacher</option>
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher.id }}">{{ teacher }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <select class="form-select" name="tech_subject"  aria-label="Default select example">
+                            <option selected>Open this select subject</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject.id }}">{{ subject }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="mb-3">
+                    <select class="form-select" name="stdclass"  aria-label="Default select example">
+                        <option selected>Open this select class</option>
+                        {% for class in classes %}
+                        <option value="{{ class.id }}">{{ class }}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+        </div>
+      </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 </body>
