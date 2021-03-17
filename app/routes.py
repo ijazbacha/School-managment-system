@@ -796,7 +796,7 @@ def teacher_login():
 @app.route('/teacher/teacher_logout')
 def teacher_logout():
     session.pop('teacher_id', None)
-    return redirect(url_for('teacher_login'))
+    return redirect(url_for('home'))
 
 
 
@@ -1013,10 +1013,13 @@ def student_login():
     return render_template('student/student_login.html', title='Student Login')
 
 
+
 @app.route('/student/student_logout')
 def student_logout():
     session.pop('student_id', None)
-    return redirect(url_for('student_login'))
+    return redirect(url_for('home'))
+
+
 
 
 @app.route('/student/student_index', methods=['GET', 'POST'])

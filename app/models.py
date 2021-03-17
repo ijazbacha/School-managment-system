@@ -81,6 +81,20 @@ class LeaveStudent(db.Model):
     def __repr__(self):
         return 'Leave Student {}'.format(self.std_name)
 
+
+class StudentAttendance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    std_name = db.Column(db.String(64))
+    std_class = db.Column(db.String(64))
+    teacher = db.Column(db.String(64))
+    attendance = db.Column(db.String(64))
+    date = db.Column(db.DateTime, default=datetime.utcnow())
+
+    def __repr__(self):
+        return 'Student Attendance {}'.format(self.std_class)
+
+
+
 class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sub_name = db.Column(db.String(64))

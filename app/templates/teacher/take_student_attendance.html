@@ -37,7 +37,7 @@
 <div class="container">
        
         <h1 class="text-center mt-4">Students Attendance</h1>
-    <form action="" method="POST">
+    
         <table class="table mt-4">
             <thead class="table-dark">
             <tr>
@@ -52,6 +52,7 @@
             </thead>
             <tbody>
           {% for student in students %}
+          <form action="" method="POST">
             <tr>
                 <td> {{ student.id }} </td>
                 <td> {{ student.std_name }} </td>
@@ -86,11 +87,12 @@
                 <td> <button type="submit" class="btn btn-secondary">Submit</button> </td>
                 
             </tr>
+        </form>
             {% endfor %}
             </tbody>
         
         </table>
-    </form>
+    
         <hr>      
 </div>
 
