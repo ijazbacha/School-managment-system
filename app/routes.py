@@ -444,8 +444,7 @@ def add_teacher():
             return redirect(url_for('add_teacher')) 
 
         if tech_class == 'Open this select class':
-            flash('Please etner class!')
-            return redirect(url_for('add_teacher')) 
+            tech_class = 'None'
 
 
         #tech_subject = Subject.query.filter_by(id=tech_subject.id).first()
@@ -961,6 +960,17 @@ def update_lecture(id=id):
             return redirect(url_for('preview_lecture', teacher=g.user.id))
             
     return render_template('teacher/add_lecture.html', lecture=lecture, subjects=subjects, classes=classes)
+
+
+
+
+@app.route('/teacher/take_student_attendance/<class_id>')
+def take_student_attendance(class_id):
+    
+    students = Student.query.filter_by(std_class=class_id).all()
+    return render_template('teacher/take_student_attendance.html', students=students)
+
+
 
 
 

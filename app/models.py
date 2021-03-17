@@ -62,6 +62,7 @@ class Student(db.Model):
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
 
     def __repr__(self):
         return 'Student {}'.format(self.std_name)
@@ -87,6 +88,7 @@ class Subject(db.Model):
     teacher = db.relationship('Teacher', backref='sub')
     leaveteacher = db.relationship('LeaveTeacher', backref='sub')
     uploadlecture = db.relationship('UploadLecture', backref='sub')
+    
 
     def __repr__(self):
         return 'Subject {}'.format(self.sub_name)
