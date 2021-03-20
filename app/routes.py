@@ -1002,10 +1002,15 @@ def take_student_attendance(class_id):
 def show_student_attendance(teacher_id, class_id):
     if not g.user:
         return redirect(url_for('teacher_login'))
-        
-    query = StudentAttendance.query.filter_by(teacher_id=teacher_id, class_id=class_id).all()
-    return render_template('teacher/show_student_attendance.html', query=query)
-
+    
+    page = request.args.get('page', 1, type=int)
+    query = StudentAttendance.query.filter_by(teacher_id=teacher_id, class_id=class_id).order_by(StudentAttendance.date.desc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('show_student_attendance', teacher_id=teacher_id, class_id=class_id, page=query.next_num) \
+        if query.has_next else None
+    prev_url = url_for('show_student_attendance', teacher_id=teacher_id, class_id=class_id, page=query.prev_num) \
+        if query.has_prev else None
+    return render_template('teacher/show_student_attendance.html', query=query.items, next_url=next_url, prev_url=prev_url)
 
 
 #------------- End Teacher -------------#
@@ -1113,8 +1118,14 @@ def student_attendance_view(std_id, class_id):
     if not g.std_user:
         return redirect(url_for('student_login'))
     
-    query = StudentAttendance.query.filter_by(std_id=std_id, class_id=class_id).all()
-    return render_template('student/student_attendance_view.html', query=query)
+    page = request.args.get('page', 1, type=int)  
+    query = StudentAttendance.query.filter_by(std_id=std_id, class_id=class_id).order_by(StudentAttendance.date.desc()).paginate(
+        page, app.config['ENTRY_PER_PAGE'], False)
+    next_url = url_for('student_attendance_view', std_id=std_id, class_id=class_id, page=query.next_num) \
+        if query.has_next else None
+    prev_url = url_for('student_attendance_view', std_id=std_id, class_id=class_id, page=query.prev_num) \
+        if query.has_prev else None
+    return render_template('student/student_attendance_view.html', query=query.items, next_url=next_url, prev_url=prev_url)
 
 
 #------------- End Student -------------#
