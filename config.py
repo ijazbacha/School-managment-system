@@ -15,7 +15,7 @@ class Config(object):
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=4)
 
-    ENTRY_PER_PAGE = 100
+    ENTRY_PER_PAGE = 30
 
     ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
 

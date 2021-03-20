@@ -1000,6 +1000,9 @@ def take_student_attendance(class_id):
 
 @app.route('/teacher/show_student_attendance/<teacher_id>/<class_id>')
 def show_student_attendance(teacher_id, class_id):
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+        
     query = StudentAttendance.query.filter_by(teacher_id=teacher_id, class_id=class_id).all()
     return render_template('teacher/show_student_attendance.html', query=query)
 
@@ -1103,6 +1106,15 @@ def std_lecture_detial_view(id):
     lecture = UploadLecture.query.filter_by(id=id).first()
     return render_template('student/std_lecture_detial_view.html', lecture=lecture)
 
+
+
+@app.route('/student/student_attendance_view/<std_id>/<class_id>')
+def student_attendance_view(std_id, class_id):
+    if not g.std_user:
+        return redirect(url_for('student_login'))
+    
+    query = StudentAttendance.query.filter_by(std_id=std_id, class_id=class_id).all()
+    return render_template('student/student_attendance_view.html', query=query)
 
 
 #------------- End Student -------------#

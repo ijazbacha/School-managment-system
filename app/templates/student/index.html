@@ -51,7 +51,7 @@
             <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal">
                 View Lectures
             </button>
-            <a href="  "><button type="submit" class="btn btn-secondary">View Attendance</button></a>
+            <a href=" {{ url_for('student_attendance_view', std_id=g.std_user.id, class_id=g.std_user.stdclass.id)}} "><button type="submit" class="btn btn-secondary">View Attendance</button></a>
         </div>
     </div>
 
