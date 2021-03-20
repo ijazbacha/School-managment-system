@@ -92,7 +92,7 @@ class StudentAttendance(db.Model):
     class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     date = db.Column(db.DateTime, default=datetime.utcnow())
-    #todaydate = db.Column(db.Date, default=date.today())
+    
 
     def __repr__(self):
         return 'Student Attendance {}'.format(self.date)

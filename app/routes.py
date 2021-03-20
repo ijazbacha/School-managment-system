@@ -987,7 +987,6 @@ def take_student_attendance(class_id):
             flash('You already take attendance of student {}'.format(std.std.std_name))
             return redirect(url_for('take_student_attendance', class_id=g.user.stdclass.id))
 
-
         take_attendance = StudentAttendance(std_id=std_id, class_id=clas_id, teacher_id=teacher_id, attendance=attendance)
         db.session.add(take_attendance)
         db.session.commit()
@@ -998,6 +997,11 @@ def take_student_attendance(class_id):
     return render_template('teacher/take_student_attendance.html', students=students)
 
 
+
+@app.route('/teacher/show_student_attendance/<teacher_id>/<class_id>')
+def show_student_attendance(teacher_id, class_id):
+    query = StudentAttendance.query.filter_by(teacher_id=teacher_id, class_id=class_id).all()
+    return render_template('teacher/show_student_attendance.html', query=query)
 
 
 

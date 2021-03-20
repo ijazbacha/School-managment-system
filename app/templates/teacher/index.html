@@ -46,7 +46,11 @@
             <p><b> Gender: </b> <span style="float: right;">{{ g.user.gender }} </span></p>
             <p><b> Salary: </b> <span style="float: right;">{{ g.user.salary }} </span></p>
             <p><b> Subject: </b> <span style="float: right;">{{ g.user.sub.sub_name }}</span> </p>
+            {% if g.user.stdclass.cls_name %}
             <p><b> Class Head: </b> <span style="float: right;">{{ g.user.stdclass.cls_name }}</span> </p>
+            {% else %}
+            <p><b> Class Head: </b> <span style="float: right;">None</span> </p>
+            {% endif %}
             <p><b> Join Date: </b> <span style="float: right;">{{ g.user.join_date.strftime('%Y-%m-%d') }} </span></p>
         </div>
         <div class="button">
@@ -56,6 +60,8 @@
             </button>
             {% if g.user.stdclass.id %}
             <a href=" {{ url_for('take_student_attendance', class_id=g.user.stdclass.id) }} "><button type="submit" class="btn btn-secondary">Take Attendance</button></a>
+            
+            <a href=" {{ url_for('show_student_attendance', teacher_id=g.user.id, class_id=g.user.stdclass.id) }} "><button type="submit" class="btn btn-secondary">Show Attendance</button></a>
             {% endif %}
         </div>
     </div>
