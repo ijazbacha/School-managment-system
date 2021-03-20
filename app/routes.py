@@ -1,11 +1,11 @@
 from app import app, db
-from datetime import datetime
+from datetime import datetime, date
 from werkzeug.utils import secure_filename
 import pdfkit
 import os
 from flask import Flask, render_template, redirect, g, url_for, request, flash, session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, Worker, LeaveWorker, Class
+from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, StudentAttendance, Worker, LeaveWorker, Class
 
 #config=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
 #pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
@@ -964,10 +964,37 @@ def update_lecture(id=id):
 
 
 
-@app.route('/teacher/take_student_attendance/<class_id>')
+@app.route('/teacher/take_student_attendance/<class_id>', methods=['GET', 'POST'])
 def take_student_attendance(class_id):
-    
+    if not g.user:
+        return redirect(url_for('teacher_login'))
+
     students = Student.query.filter_by(std_class=class_id).all()
+
+    if request.method == 'POST':
+        attendance = request.form.get('attendance')
+        if attendance == None:
+            flash('Please select one of these [Present, Absent, Leave]')
+            return redirect(url_for('take_student_attendance', class_id=g.user.stdclass.id))
+                
+        std_id = request.form.get('std_id')
+        clas_id = class_id
+        teacher_id = g.user.id
+
+        std = StudentAttendance.query.filter_by(std_id=std_id).first()
+        today = datetime.utcnow()
+        if std is not None and std.date.strftime("%d/%m/%Y") == today.strftime("%d/%m/%Y"):
+            flash('You already take attendance of student {}'.format(std.std.std_name))
+            return redirect(url_for('take_student_attendance', class_id=g.user.stdclass.id))
+
+
+        take_attendance = StudentAttendance(std_id=std_id, class_id=clas_id, teacher_id=teacher_id, attendance=attendance)
+        db.session.add(take_attendance)
+        db.session.commit()
+        flash('Successfull take attendance!')
+        return redirect(url_for('take_student_attendance', class_id=g.user.stdclass.id))
+
+            
     return render_template('teacher/take_student_attendance.html', students=students)
 
 

@@ -54,9 +54,9 @@
           {% for student in students %}
           <form action="" method="POST">
             <tr>
-                <td> {{ student.id }} </td>
-                <td> {{ student.std_name }} </td>
-                <td> {{ student.stdclass.cls_name }} </td>
+                <td><input type="text" style="border: none; offset: none;" id="std_id" name="std_id" value="{{student.id}}" readonly></td>
+                <td><input type="text" style="border: none; offset: none;" id="std_id" name="std_id" value="{{student.std_name}}" readonly></td>
+                <td><input type="text" style="border: none; offset: none;" id="std_id" name="std_id" value="{{ student.stdclass.cls_name }}" readonly></td>
 
                 <td> 
                     <div class="mb-3">

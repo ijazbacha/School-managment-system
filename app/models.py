@@ -1,7 +1,7 @@
 from app import db, login, app
 from flask import redirect, url_for
 from flask_login import UserMixin, current_user
-from datetime import datetime
+from datetime import datetime, date
 from flask_admin import  Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash, check_password_hash 
@@ -47,6 +47,7 @@ class Class(db.Model):
     leavestudent = db.relationship('LeaveStudent', backref='stdclass')
     uploadlecture = db.relationship('UploadLecture', backref='stdclass')
     teacher = db.relationship('Teacher', backref='stdclass')
+    attendance = db.relationship('StudentAttendance', backref='stdclass')
 
     def __repr__(self):
         return 'Class {}'.format(self.cls_name)
@@ -62,6 +63,8 @@ class Student(db.Model):
     join_date = db.Column(db.DateTime, default=datetime.utcnow())
     std_class = db.Column(db.Integer, db.ForeignKey('class.id'))
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    attendance = db.relationship('StudentAttendance', backref='std')
+    
     
 
     def __repr__(self):
@@ -84,14 +87,15 @@ class LeaveStudent(db.Model):
 
 class StudentAttendance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    std_name = db.Column(db.String(64))
-    std_class = db.Column(db.String(64))
-    teacher = db.Column(db.String(64))
     attendance = db.Column(db.String(64))
+    std_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    class_id = db.Column(db.Integer, db.ForeignKey('class.id'))
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     date = db.Column(db.DateTime, default=datetime.utcnow())
+    #todaydate = db.Column(db.Date, default=date.today())
 
     def __repr__(self):
-        return 'Student Attendance {}'.format(self.std_class)
+        return 'Student Attendance {}'.format(self.date)
 
 
 
@@ -121,6 +125,7 @@ class Teacher(db.Model):
     tech_subject = db.Column(db.Integer, db.ForeignKey('subject.id'))
     tech_class = db.Column(db.Integer, db.ForeignKey('class.id'))
     uploadlecture = db.relationship('UploadLecture', backref='t_lecture')
+    attendance = db.relationship('StudentAttendance', backref='t_lecture')
 
     def __repr__(self):
         return 'Teacher {}'.format(self.tech_name)
