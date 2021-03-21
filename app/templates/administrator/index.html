@@ -1,8 +1,17 @@
-{% extends 'admin/base.html' %}
+{% extends 'administrator/base.html' %}
+
+
 
 {% block content %} 
+{{ messaage }}
 
+{{ title }}
 <div class="container">
+    <form action="" method="GET">
+        <textarea name="message" id="messaage" cols="30" rows="10" placeholder="Send Notifiaction"></textarea>
+        <button type="submit">Send</button>
+    </form>
+    
     <div id="std-box">
         <h1> {{ students|length }} </h1>
         <a href="{{ url_for('student_Detials') }}"><h2>Total Students</h2></a>

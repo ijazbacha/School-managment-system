@@ -1,4 +1,4 @@
-{% extends 'admin/base.html' %}
+{% extends 'administrator/base.html' %}
 
 
 {% block content %}
@@ -8,14 +8,14 @@
   {% if query %}
   <h1 class="text-center mt-4">Search Result About! <span class="text-primary"> {{ query }} </span></h1>
   {% else %}
-  <h1 class="text-center mt-4">Leave Workers Details</h1>
+  <h1 class="text-center mt-4">Leave Teachers Details</h1>
   {% endif %}
   
 
   <form action="" method="GET">
     <div class="row g-3 align-items-center mt-4">
       <div class="col-auto">
-        <input type="search" name="query" id="inputPassword6" class="form-control" placeholder="Enter Worker Name" required>
+        <input type="search" name="query" id="inputPassword6" class="form-control" placeholder="Enter Teacher Name" required>
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-dark">Search</button>
@@ -29,22 +29,26 @@
         <tr>
           <th scope="col">Id</th>
           <th scope="col">Name</th>
+          <th scope="col">Email</th>
           <th scope="col">Address</th>
           <th scope="col">Contact</th>
+          <th scope="col">Subject</th>
           <th scope="col">LeaveDate</th>
           <th scope="col">Admin</th>
-          <th scope="col">Delete</th>
+          <th scope="col">Permanent Delete</th>
         </tr>
       </thead>
-      {% for worker in leave_worker %}
+      {% for teacher in teachers %}
       <tbody>
         <tr>
-          <td> {{ worker.id }}</td>
-          <td> {{ worker.leave_worker_name }} </td>
-          <td> {{ worker.leave_worker_address }} </td>
-          <td> {{ worker.leave_worker_contact }} </td>
-          <td> {{ worker.leave_date.strftime('%Y-%m-%d') }} </td>
-          <td> {{ worker.admin.username }} </td>
+          <td> {{ teacher.id }}</td>
+          <td> {{ teacher.tech_name }} </td>
+          <td> {{ teacher.email }} </td>
+          <td> {{ teacher.tech_address }} </td>
+          <td> {{ teacher.tech_contact }} </td>
+          <td> {{ teacher.sub.sub_name }} </td>
+          <td> {{ teacher.leave_date.strftime('%Y-%m-%d') }} </td>
+          <td> {{ teacher.admin.username }} </td>
           <td> 
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-danger ms-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -62,11 +66,11 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                  <h5 class="card-title text-warning"> Worker<b style="color: black;"> {{ worker.leave_worker_name }}</b></h5>
+                  <h5 class="card-title text-warning"> Worker<b style="color: black;"> {{ teacher.tech_name }}</b></h5>
               </div>
               <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <a href="{{ url_for('leave_worker_delete', id=worker.id) }}"><button type="button" class="btn btn-danger">Yes</button></a>
+              <a href="{{ url_for('leave_teacher_delete', id=teacher.id) }}"><button type="button" class="btn btn-danger">Yes</button></a>
               </div>
           </div>
           </div>
@@ -74,9 +78,8 @@
       {% endfor %}
   </table>
 
-  <form action="{{ url_for('leave_worker_pdf') }}" method="POST"> 
-    <button type="submit" class="btn btn-danger float-end">Generate Pdf</button>
-  </form>
+  <a href="{{ url_for('leave_teacher_pdf') }}"><button type="submit" class="btn btn-danger float-end">Generate Pdf</button></a>
+
 
   <nav aria-label="Page navigation example">
     <ul class="pagination">

@@ -2,7 +2,7 @@ from app import db, login, app
 from flask import redirect, url_for
 from flask_login import UserMixin, current_user
 from datetime import datetime, date
-from flask_admin import  Admin, AdminIndexView
+from flask_admin import  Admin, AdminIndexView, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash, check_password_hash 
 
@@ -188,7 +188,7 @@ class LeaveWorker(db.Model):
     def __repr__(self):
         return 'Leave Worker {}'.format(self.leave_worker_name)
 
-
+'''
 
 class MyAdminIndexViewView(AdminIndexView):
 
@@ -200,9 +200,8 @@ class MyAdminIndexViewView(AdminIndexView):
         # redirect to login page if user doesn't have access
         return redirect(url_for('admin_login'))
         
-admin = Admin(app, name='schoolmanagment', template_mode='bootstrap3', index_view=MyAdminIndexViewView())
+admin = Admin(app, template_mode='bootstrap3', index_view=MyAdminIndexViewView())
 
-
-
+'''
 
 

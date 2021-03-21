@@ -18,7 +18,7 @@ app.config['IMAGE_UPLOADS'] = os.path.join(app.root_path, 'static/image')
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('administrator'))
 
     if g.user:
         return redirect(url_for('teacher_index'))
@@ -29,11 +29,15 @@ def home():
 
 #------------ Admin ---------------#
 
-@app.route('/admin')
+
+@app.route('/administrator', methods=['GET', 'POST'])
 @login_required
-def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
+def administrator():
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin_login'))
+        
+    message = request.form.get('message')
+        
     students = Student.query.all()
     teachers = Teacher.query.all()
     workers = Worker.query.all()
@@ -42,7 +46,9 @@ def index():
     leave_tech = LeaveTeacher.query.all()
     l_worker = LeaveWorker.query.all()
     subjects = Subject.query.all()
-    return render_template('admin/index.html', title='Home', 
+    return render_template('administrator/index.html', 
+    title='Home', 
+    message=message, 
     students=students, 
     teachers=teachers, 
     workers=workers, 
@@ -59,7 +65,7 @@ def index():
 @app.route('/admin_login', methods=['POST', 'GET'])
 def admin_login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('administrator'))
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -74,9 +80,9 @@ def admin_login():
         
         login_user(admin, remember=remember_me)
         flash('Logged in successfully.')
-        return redirect('/admin')     
+        return redirect('administrator')     
 
-    return render_template('admin/login.html', title='Login')
+    return render_template('administrator/login.html', title='Login')
 
 
 @app.route('/admin_logout')
@@ -89,7 +95,7 @@ def admin_logout():
 @app.route('/admin_registration', methods=['POST', 'GET'])
 def admin_registration():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('administrator'))
 
     if request.method == 'POST':
         username = request.form['username']
@@ -121,10 +127,10 @@ def admin_registration():
         db.session.commit()
         flash("Successfully register")
         return redirect(url_for('admin_login'))
-    return render_template('admin/register.html', title='Registration')
+    return render_template('administrator/register.html', title='Registration')
 
 
-@app.route('/admin/add_class', methods=['GET', 'POST'])
+@app.route('/administrator/add_class', methods=['GET', 'POST'])
 @login_required
 def add_class():
     if request.method == 'POST':
@@ -135,17 +141,17 @@ def add_class():
         db.session.commit()
         flash('{} is successfully added'.format(cls_name))
         return redirect(url_for('list_of_class'))
-    return render_template('admin/add_class.html', title='Add New Class', u_class=None)
+    return render_template('administrator/add_class.html', title='Add New Class', u_class=None)
 
 
-@app.route('/admin/list_of_class')
+@app.route('/administrator/list_of_class')
 @login_required
 def list_of_class():
     classes = Class.query.all()
-    return render_template('admin/list_of_class.html', classes=classes)
+    return render_template('administrator/list_of_class.html', classes=classes)
 
 
-@app.route('/admin/update_class/<id>', methods=["GET", "POST"])
+@app.route('/administrator/update_class/<id>', methods=["GET", "POST"])
 @login_required
 def update_class(id):
     u_class = Class.query.filter_by(id=id).first()
@@ -155,11 +161,11 @@ def update_class(id):
         db.session.commit()
         flash('{} is successfully update!'.format(u_class.cls_name))
         return redirect(url_for('list_of_class'))
-    return render_template('admin/add_class.html', title='Update Class', u_class=u_class)
+    return render_template('administrator/add_class.html', title='Update Class', u_class=u_class)
 
 
 
-@app.route('/admin/delete_class/<id>')
+@app.route('/administrator/delete_class/<id>')
 @login_required
 def delete_class(id):
     try:
@@ -173,14 +179,14 @@ def delete_class(id):
 
 
 
-@app.route('/admin/class_wise_student/<std_class>')
+@app.route('/administrator/class_wise_student/<std_class>')
 @login_required
 def class_wise_student(std_class):
     query = request.args.get('query')
     if query:
         students = Student.query.filter(Student.std_name.contains(query)|
                                         Student.f_name.contains(query))
-        return render_template('admin/class_wise_student.html', title='Class Wise Student', query=query, students=students)
+        return render_template('administrator/class_wise_student.html', title='Class Wise Student', query=query, students=students)
 
     page = request.args.get('page', 1, type=int)
     class_name = Class.query.filter_by(id=std_class).first()
@@ -190,12 +196,12 @@ def class_wise_student(std_class):
         if students.has_next else None
     prev_url = url_for('class_wise_student', std_class=std_class, page=students.prev_num) \
         if students.has_prev else None
-    return render_template('admin/class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students.items, next_url=next_url, prev_url=prev_url)
+    return render_template('administrator/class_wise_student.html', title='Class Wise Student', class_name=class_name, students=students.items, next_url=next_url, prev_url=prev_url)
 
 
 
 
-@app.route('/admin/add_student', methods=['GET', 'POST'])
+@app.route('/administrator/add_student', methods=['GET', 'POST'])
 @login_required
 def add_student():
     classes = Class.query.all()
@@ -226,17 +232,17 @@ def add_student():
         flash('{} is successfully added'.format(std_name))
         return redirect(url_for('add_student'))
 
-    return render_template('admin/add_student.html', title='Add Student', classes=classes, student=None)
+    return render_template('administrator/add_student.html', title='Add Student', classes=classes, student=None)
 
 
-@app.route('/admin/student_Detials', methods=['GET', 'POST'])
+@app.route('/administrator/student_Detials', methods=['GET', 'POST'])
 @login_required
 def student_Detials():
     query = request.args.get('query')
     if query:
         students = Student.query.filter(Student.std_name.contains(query)|
                                         Student.f_name.contains(query))
-        return render_template('admin/student_Detials.html', title='Student Detials', students=students, query=query)
+        return render_template('administrator/student_Detials.html', title='Student Detials', students=students, query=query)
         
     page = request.args.get('page', 1, type=int)
     students = Student.query.order_by(Student.id.asc()).paginate(
@@ -245,14 +251,14 @@ def student_Detials():
         if students.has_next else None
     prev_url = url_for('student_Detials', page=students.prev_num) \
         if students.has_prev else None
-    return render_template('admin/student_Detials.html', title='Student Detials', students=students.items, next_url=next_url, prev_url=prev_url)
+    return render_template('administrator/student_Detials.html', title='Student Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
-@app.route('/admin/student_detials_pdf')
+@app.route('/administrator/student_detials_pdf')
 @login_required
 def student_detials_pdf():
     students = Teacher.query.all()
-    html = render_template("admin/student_detials_pdf.html", students=students)
+    html = render_template("administrator/student_detials_pdf.html", students=students)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -260,18 +266,18 @@ def student_detials_pdf():
     return response
 
 
-@app.route('/admin/student_profile/<id>')
+@app.route('/administrator/student_profile/<id>')
 @login_required
 def student_profile(id):
     student = Student.query.filter_by(id=id).first()
-    return render_template('admin/student_profile.html', title='Student Profile', student=student)
+    return render_template('administrator/student_profile.html', title='Student Profile', student=student)
 
 
-@app.route('/admin/student_profile_pdf/<id>')
+@app.route('/administrator/student_profile_pdf/<id>')
 @login_required
 def student_profile_pdf(id):
     students = Teacher.query.filter_by(id=id).first()
-    html = render_template("admin/student_profile_pdf.html", student=students)
+    html = render_template("administrator/student_profile_pdf.html", student=students)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -279,7 +285,7 @@ def student_profile_pdf(id):
     return response
 
 
-@app.route('/admin/update_student/<id>', methods=['POST', 'GET'])
+@app.route('/administrator/update_student/<id>', methods=['POST', 'GET'])
 @login_required
 def update_student(id):
     classes = Class.query.all()
@@ -302,10 +308,10 @@ def update_student(id):
         db.session.commit()
         flash('{} is successfully update!'.format(student.std_name))
         return redirect(url_for('student_profile', id=student.id))
-    return render_template('admin/add_student.html', title='Update Student', student=student, classes=classes)
+    return render_template('administrator/add_student.html', title='Update Student', student=student, classes=classes)
 
 
-@app.route('/admin/leave_student/<id>')
+@app.route('/administrator/leave_student/<id>')
 @login_required
 def leave_student(id):
     student = Student.query.filter_by(id=id).first()
@@ -334,14 +340,14 @@ def leave_student(id):
     return redirect(url_for('student_Detials'))
 
 
-@app.route('/admin/leave_student_detials')
+@app.route('/administrator/leave_student_detials')
 @login_required
 def leave_student_detials():
     query = request.args.get('query')
     if query:
         students = LeaveStudent.query.filter(LeaveStudent.std_name.contains(query)|
                                         LeaveStudent.f_name.contains(query))
-        return render_template('admin/leave_student_detials.html', title='Leave Students Detials', students=students, query=query)
+        return render_template('administrator/leave_student_detials.html', title='Leave Students Detials', students=students, query=query)
     page = request.args.get('page', 1, type=int)
     students = LeaveStudent.query.order_by(LeaveStudent.id.asc()).paginate(
         page, app.config['ENTRY_PER_PAGE'], False)
@@ -349,14 +355,14 @@ def leave_student_detials():
         if students.has_next else None
     prev_url = url_for('leave_student_detials', page=students.prev_num) \
         if students.has_prev else None
-    return render_template('admin/leave_student_detials.html', title='Leave Students Detials', students=students.items, next_url=next_url, prev_url=prev_url)
+    return render_template('administrator/leave_student_detials.html', title='Leave Students Detials', students=students.items, next_url=next_url, prev_url=prev_url)
 
 
-@app.route('/admin/leave_student_pdf')
+@app.route('/administrator/leave_student_pdf')
 @login_required
 def leave_student_pdf():
     students = Teacher.query.all()
-    html = render_template("admin/leave_student_pdf.html", students=students)
+    html = render_template("administrator/leave_student_pdf.html", students=students)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -364,7 +370,7 @@ def leave_student_pdf():
     return response
 
 
-@app.route('/admin/leave_student_delete/<id>')
+@app.route('/administrator/leave_student_delete/<id>')
 @login_required
 def leave_student_delete(id):
     try:
@@ -377,7 +383,7 @@ def leave_student_delete(id):
         pass
 
 
-@app.route('/admin/add_subject', methods=['POST', 'GET'])
+@app.route('/administrator/add_subject', methods=['POST', 'GET'])
 @login_required
 def add_subject():
     if request.method == 'POST':
@@ -388,17 +394,17 @@ def add_subject():
         db.session.commit()
         flash('{} subject is successfully added!'.format(sub_name))
         return redirect(url_for('list_of_subject'))
-    return render_template('admin/add_subject.html', title='Add Subject', subjects=None)
+    return render_template('administrator/add_subject.html', title='Add Subject', subjects=None)
 
 
-@app.route('/admin/list_of_subject/')
+@app.route('/administrator/list_of_subject/')
 @login_required
 def list_of_subject():
     subjects = Subject.query.all()
-    return render_template('admin/list_of_subject.html', title='Subject', subjects=subjects)
+    return render_template('administrator/list_of_subject.html', title='Subject', subjects=subjects)
 
 
-@app.route('/admin/update_subject/<id>', methods=['GET', 'POST'])
+@app.route('/administrator/update_subject/<id>', methods=['GET', 'POST'])
 @login_required
 def update_subject(id):
     subjects = Subject.query.filter_by(id=id).first()
@@ -408,11 +414,11 @@ def update_subject(id):
         db.session.commit()
         flash('{} subject is successfully added!'.format(subjects.sub_name))
         return redirect(url_for('list_of_subject'))
-    return render_template('admin/add_subject.html', title='Add Subject', subjects=subjects)
+    return render_template('administrator/add_subject.html', title='Add Subject', subjects=subjects)
 
 
 
-@app.route('/admin/delete_subject/<id>')
+@app.route('/administrator/delete_subject/<id>')
 @login_required
 def delete_subject(id):
     subject = Subject.query.filter_by(id=id).first()
@@ -423,7 +429,7 @@ def delete_subject(id):
         return redirect(url_for('list_of_subject'))
 
 
-@app.route('/admin/add_teacher', methods=['GET', 'POST'])
+@app.route('/administrator/add_teacher', methods=['GET', 'POST'])
 @login_required
 def add_teacher():
     classes = Class.query.all()
@@ -464,16 +470,16 @@ def add_teacher():
         flash('{} teacher is successfully added!'.format(tech_name))
         return redirect(url_for('teacher_detials'))
 
-    return render_template('admin/add_teacher.html', title='Add Teacher', subjects=subjects, classes=classes, teacher=None)
+    return render_template('administrator/add_teacher.html', title='Add Teacher', subjects=subjects, classes=classes, teacher=None)
 
 
-@app.route('/admin/teacher_detials')
+@app.route('/administrator/teacher_detials')
 @login_required
 def teacher_detials():
     query = request.args.get('query')
     if query:
         teachers = Teacher.query.filter(Teacher.tech_name.contains(query))
-        return render_template('admin/teacher_detials.html', title='Teachers', teachers=teachers, query=query)
+        return render_template('administrator/teacher_detials.html', title='Teachers', teachers=teachers, query=query)
     
     page = request.args.get('page', 1, type=int)  
     teachers = Teacher.query.order_by(Teacher.id.asc()).paginate(
@@ -482,14 +488,14 @@ def teacher_detials():
         if teachers.has_next else None
     prev_url = url_for('teacher_detials', page=teachers.prev_num) \
         if teachers.has_prev else None
-    return render_template('admin/teacher_detials.html', title='Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
+    return render_template('administrator/teacher_detials.html', title='Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
-@app.route('/admin/teacher_detials_pdf')
+@app.route('/administrator/teacher_detials_pdf')
 @login_required
 def teacher_detials_pdf():
     teachers = Teacher.query.all()
-    html = render_template("admin/teacher_detials_pdf.html", teachers=teachers)
+    html = render_template("administrator/teacher_detials_pdf.html", teachers=teachers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -497,18 +503,18 @@ def teacher_detials_pdf():
     return response
 
 
-@app.route('/admin/teacher_profile/<id>')
+@app.route('/administrator/teacher_profile/<id>')
 @login_required
 def teacher_profile(id):
     teacher = Teacher.query.filter_by(id=id).first()
-    return render_template('admin/teacher_profile.html', title='Teacher Profile', teacher=teacher)
+    return render_template('administrator/teacher_profile.html', title='Teacher Profile', teacher=teacher)
 
 
-@app.route('/admin/teacher_profile_pdf/<id>')
+@app.route('/administrator/teacher_profile_pdf/<id>')
 @login_required
 def teacher_profile_pdf(id):
     teachers = Teacher.query.filter_by(id=id).first()
-    html = render_template("admin/teacher_profile_pdf.html", teacher=teachers)
+    html = render_template("administrator/teacher_profile_pdf.html", teacher=teachers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -518,7 +524,7 @@ def teacher_profile_pdf(id):
 
 
 
-@app.route('/admin/update_teacher/<id>', methods=['GET', 'POST'])
+@app.route('/administrator/update_teacher/<id>', methods=['GET', 'POST'])
 @login_required
 def update_teacher(id):
     subjects = Subject.query.all()
@@ -542,10 +548,10 @@ def update_teacher(id):
         db.session.commit()
         flash('Teacher {} successfully update!'.format(teacher.tech_name))
         return redirect(url_for('teacher_profile', id=teacher.id))
-    return render_template('admin/add_teacher.html', title='Update Teacher', teacher=teacher, subjects=subjects)
+    return render_template('administrator/add_teacher.html', title='Update Teacher', teacher=teacher, subjects=subjects)
 
 
-@app.route('/admin/leave_teacher/<id>')
+@app.route('/administrator/leave_teacher/<id>')
 @login_required
 def leave_teacher(id):
     teacher = Teacher.query.filter_by(id=id).first()
@@ -575,13 +581,13 @@ def leave_teacher(id):
         return redirect(url_for('teacher_detials'))
     
 
-@app.route('/admin/leave_teacher_detials')
+@app.route('/administrator/leave_teacher_detials')
 @login_required
 def leave_teacher_detials():
     query = request.args.get('query')
     if query:
         teachers = LeaveTeacher.query.filter(LeaveTeacher.tech_name.contains(query))
-        return render_template('admin/leave_teacher_detials.html', title='Leave Teachers', teachers=teachers, query=query)
+        return render_template('administrator/leave_teacher_detials.html', title='Leave Teachers', teachers=teachers, query=query)
     
     page = request.args.get('page', 1, type=int)
        
@@ -591,14 +597,14 @@ def leave_teacher_detials():
         if teachers.has_next else None
     prev_url = url_for('leave_teacher_detials', page=teachers.prev_num) \
         if teachers.has_prev else None
-    return render_template('admin/leave_teacher_detials.html', title='Leave Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
+    return render_template('administrator/leave_teacher_detials.html', title='Leave Teachers', teachers=teachers.items, next_url=next_url, prev_url=prev_url,)
 
 
-@app.route('/admin/leave_teacher_pdf')
+@app.route('/administrator/leave_teacher_pdf')
 @login_required
 def leave_teacher_pdf():
     teachers = LeaveTeacher.query.all()
-    html = render_template("admin/leave_teacher_pdf.html", teachers=teachers)
+    html = render_template("administrator/leave_teacher_pdf.html", teachers=teachers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -606,7 +612,7 @@ def leave_teacher_pdf():
     return response
 
 
-@app.route('/admin/leave_teacher_delete/<id>')
+@app.route('/administrator/leave_teacher_delete/<id>')
 @login_required
 def leave_teacher_delete(id):
     teacher = LeaveTeacher.query.filter_by(id=id).first()
@@ -617,7 +623,7 @@ def leave_teacher_delete(id):
         return redirect(url_for('leave_teacher_detials'))
 
 
-@app.route('/admin/add_worker', methods=['GET', 'POST'])
+@app.route('/administrator/add_worker', methods=['GET', 'POST'])
 @login_required
 def add_worker():
     if request.method == 'POST':
@@ -630,17 +636,17 @@ def add_worker():
         flash('{} is successfully added'.format(worker_name))
         return redirect(url_for('worker_detials'))
 
-    return render_template('admin/worker.html', title='Worker', worker=None)
+    return render_template('administrator/worker.html', title='Worker', worker=None)
 
 
 
-@app.route('/admin/worker_detials')
+@app.route('/administrator/worker_detials')
 @login_required
 def worker_detials():
     query = request.args.get('query')
     if query:
         workers = Worker.query.filter(Worker.worker_name.contains(query))
-        return render_template('admin/worker_detials.html', title='Search Worker', workers=workers, query=query)
+        return render_template('administrator/worker_detials.html', title='Search Worker', workers=workers, query=query)
     
     page = request.args.get('page', 1, type=int)   
     workers = Worker.query.order_by(Worker.id.asc()).paginate(
@@ -649,14 +655,14 @@ def worker_detials():
         if workers.has_next else None
     prev_url = url_for('worker_detials', page=workers.prev_num) \
         if workers.has_prev else None
-    return render_template('admin/worker_detials.html', title='Worker Detials', workers=workers.items, next_url=next_url, prev_url=prev_url, page=page)
+    return render_template('administrator/worker_detials.html', title='Worker Detials', workers=workers.items, next_url=next_url, prev_url=prev_url, page=page)
 
 
-@app.route('/admin/worker_detials_pdf')
+@app.route('/administrator/worker_detials_pdf')
 @login_required
 def worker_detials_pdf():
     workers = Worker.query.all()
-    html = render_template("admin/worker_detials_pdf.html", workers=workers)
+    html = render_template("administrator/worker_detials_pdf.html", workers=workers)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -664,7 +670,7 @@ def worker_detials_pdf():
     return response
 
 
-@app.route('/admin/update_worker/<id>', methods=['GET', 'POST'])
+@app.route('/administrator/update_worker/<id>', methods=['GET', 'POST'])
 @login_required
 def update_worker(id):
     worker = Worker.query.filter_by(id=id).first()
@@ -678,11 +684,11 @@ def update_worker(id):
         flash('{} is successfully update'.format(worker.worker_name))
         return redirect(url_for('worker_detials'))
 
-    return render_template('admin/worker.html', title='Worker', worker=worker)
+    return render_template('administrator/worker.html', title='Worker', worker=worker)
 
 
 
-@app.route('/admin/leave_worker/<id>')
+@app.route('/administrator/leave_worker/<id>')
 @login_required
 def leave_worker(id):
     worker = Worker.query.filter_by(id=id).first()
@@ -708,13 +714,13 @@ def leave_worker(id):
         return redirect(url_for('worker_detials'))
 
 
-@app.route('/admin/leave_worker_detials')
+@app.route('/administrator/leave_worker_detials')
 @login_required
 def leave_worker_detials():
     query = request.args.get('query')
     if query:
         leave_worker = LeaveWorker.query.filter(LeaveWorker.leave_worker_name.contains(query))
-        return render_template('admin/leave_worker.html', title='Leave Worker', leave_worker=leave_worker, query=query)
+        return render_template('administrator/leave_worker.html', title='Leave Worker', leave_worker=leave_worker, query=query)
         
     page = request.args.get('page', 1, type=int)
     leave_worker = LeaveWorker.query.order_by(LeaveWorker.id.asc()).paginate(
@@ -723,14 +729,14 @@ def leave_worker_detials():
         if leave_worker.has_next else None
     prev_url = url_for('leave_worker_detials', page=leave_worker.prev_num) \
         if leave_worker.has_prev else None
-    return render_template('admin/leave_worker.html', title='Leave Worker', leave_worker=leave_worker.items, next_url=next_url, prev_url=prev_url)
+    return render_template('administrator/leave_worker.html', title='Leave Worker', leave_worker=leave_worker.items, next_url=next_url, prev_url=prev_url)
 
 
-@app.route('/admin/leave_worker_pdf', methods=['POST'])
+@app.route('/administrator/leave_worker_pdf', methods=['POST'])
 @login_required
 def leave_worker_pdf():
     leave_worker = LeaveWorker.query.all()
-    html = render_template("admin/leave_worker_pdf.html", leave_worker=leave_worker)
+    html = render_template("administrator/leave_worker_pdf.html", leave_worker=leave_worker)
     pdf = pdfkit.from_string(html, False)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
@@ -739,7 +745,7 @@ def leave_worker_pdf():
 
 
 
-@app.route('/admin/leave_worker_delete/<id>')
+@app.route('/administrator/leave_worker_delete/<id>')
 @login_required
 def leave_worker_delete(id):
     leave_worker = LeaveWorker.query.filter_by(id=id).first()
@@ -769,8 +775,6 @@ def before_request():
         user = Teacher.query.filter_by(id=session['teacher_id']).first()
         g.user = user
     
-
-
 
 @app.route('/teacher/teacher_login', methods=['GET', 'POST'])
 def teacher_login():
@@ -981,7 +985,7 @@ def take_student_attendance(class_id):
         clas_id = class_id
         teacher_id = g.user.id
 
-        std = StudentAttendance.query.filter_by(std_id=std_id).first()
+        std = StudentAttendance.query.filter_by(std_id=std_id).order_by(StudentAttendance.date.desc()).first()
         today = datetime.utcnow()
         if std is not None and std.date.strftime("%d/%m/%Y") == today.strftime("%d/%m/%Y"):
             flash('You already take attendance of student {}'.format(std.std.std_name))
