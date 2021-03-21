@@ -7,8 +7,7 @@ from flask import Flask, render_template, redirect, g, url_for, request, flash, 
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, StudentAttendance, Worker, LeaveWorker, Class
 
-#config=pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-#pdfkit.from_url('http://127.0.0.1:5000/leave_worker_pdf', 'output.pdf', configuration=config)
+
 
 app.config['IMAGE_UPLOADS'] = os.path.join(app.root_path, 'static/image')
 #app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
@@ -258,8 +257,9 @@ def student_Detials():
 @login_required
 def student_detials_pdf():
     students = Teacher.query.all()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/student_detials_pdf.html", students=students)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -277,8 +277,9 @@ def student_profile(id):
 @login_required
 def student_profile_pdf(id):
     students = Teacher.query.filter_by(id=id).first()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/student_profile_pdf.html", student=students)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -362,8 +363,9 @@ def leave_student_detials():
 @login_required
 def leave_student_pdf():
     students = Teacher.query.all()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/leave_student_pdf.html", students=students)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -495,8 +497,9 @@ def teacher_detials():
 @login_required
 def teacher_detials_pdf():
     teachers = Teacher.query.all()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/teacher_detials_pdf.html", teachers=teachers)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -514,8 +517,9 @@ def teacher_profile(id):
 @login_required
 def teacher_profile_pdf(id):
     teachers = Teacher.query.filter_by(id=id).first()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/teacher_profile_pdf.html", teacher=teachers)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -604,8 +608,9 @@ def leave_teacher_detials():
 @login_required
 def leave_teacher_pdf():
     teachers = LeaveTeacher.query.all()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/leave_teacher_pdf.html", teachers=teachers)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -662,8 +667,9 @@ def worker_detials():
 @login_required
 def worker_detials_pdf():
     workers = Worker.query.all()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/worker_detials_pdf.html", workers=workers)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
@@ -736,8 +742,9 @@ def leave_worker_detials():
 @login_required
 def leave_worker_pdf():
     leave_worker = LeaveWorker.query.all()
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
     html = render_template("administrator/leave_worker_pdf.html", leave_worker=leave_worker)
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.from_string(html, False, configuration=config)
     response = make_response(pdf)
     response.headers["content-Type"] = "application/pdf"
     response.headers["content-Disposition"] = "inline: filename=output.pdf"
