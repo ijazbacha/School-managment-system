@@ -15,11 +15,11 @@ class Config(object):
 
     REMEMBER_COOKIE_DURATION = timedelta(hours=4)
 
-    ENTRY_PER_PAGE = 30
+    ENTRY_PER_PAGE = 50
 
     ALLOWED_IMAGE_EXTENSIONS = ['JPEG', 'JPG', 'PNG', 'GIF']
 
-    CKEDITOR_PKG_TYPE = 'standard'
+    CKEDITOR_PKG_TYPE = 'basic'
 
     # set optional bootswatch theme
     #FLASK_ADMIN_SWATCH = 'cerulean'

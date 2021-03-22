@@ -1,0 +1,25 @@
+{% extends 'administrator/base.html' %}
+
+
+
+{% block content %} 
+
+<div class="container">
+    {% for notify in notifications %}
+    <div class="m-2">
+        <p class="text-capitalize text-justify">
+            {{ notify.notification|safe }}
+        </p>
+        <p>
+            <small class="text-muted">Notification on {{ notify.notify_date.strftime('%Y-%m-%d') }}</small>
+        </p>
+    </div>
+    <a href=" {{ url_for('update_notification', id=notify.id) }} "><button class="btn btn-success ">Update</button></a>
+    <a href=""><button class="btn btn-danger ms-4">Delete</button></a>
+    <hr>
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}

@@ -5,7 +5,7 @@ import pdfkit
 import os
 from flask import Flask, render_template, redirect, g, url_for, request, flash, session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, StudentAttendance, Worker, LeaveWorker, Class
+from app.models import User, Notification, Student,LeaveStudent, Subject, Teacher, LeaveTeacher, UploadLecture, StudentAttendance, Worker, LeaveWorker, Class
 
 
 
@@ -45,6 +45,7 @@ def administrator():
     subjects = Subject.query.all()
     return render_template('administrator/index.html', 
     title='Home',
+    nofify=None,
     students=students, 
     teachers=teachers, 
     workers=workers, 
@@ -55,6 +56,47 @@ def administrator():
     subjects=subjects
     )
 
+
+
+@app.route('/administrator', methods=['POST'])
+@login_required
+def post_notification():
+    if not current_user.is_authenticated:
+        return redirect(url_for('admin_login'))
+        
+    notification = request.form['notification']
+    sender = request.form.get('sender')
+
+    if sender is None:
+        flash('Select one of the following option [Student/Teacher, Teacher, Student]')
+        return redirect(url_for('administrator'))
+
+    message = Notification(notification=notification, sender=sender)
+    db.session.add(message)
+    db.session.commit()
+    flash('Notifiaction is send to the {}'.format(sender))
+    return redirect(url_for('get_notification'))
+
+
+
+@app.route('/administrator/get_notification')
+@login_required
+def get_notification():
+    notifications = Notification.query.all()
+    return render_template('administrator/get_notification.html', title='Notification', notifications=notifications)
+
+
+
+@app.route('/administrator/update_notification/<id>', methods=['GET', 'POST'])
+@login_required
+def update_notification(id):
+    notify = Notification.query.filter_by(id=id).first()
+    if request.method == 'POST':
+        notify.notification = request.form['notification']
+        notify.sender = request.form.get('sender')
+        db.session.commit()
+        return redirect(url_for('get_notification'))
+    return render_template('administrator/index.html', title='Update Notification', notify=notify)
 
 
 

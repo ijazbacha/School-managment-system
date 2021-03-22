@@ -38,9 +38,9 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-class Notifaction(db.Model):
+class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    notifaction = db.Column(db.String(64))
+    notification = db.Column(db.Text)
     sender = db.Column(db.String(64))
     notify_date = db.Column(db.DateTime, default=datetime.utcnow())
 
