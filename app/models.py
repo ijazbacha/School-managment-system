@@ -38,6 +38,17 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+class Notifaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    notifaction = db.Column(db.String(64))
+    sender = db.Column(db.String(64))
+    notify_date = db.Column(db.DateTime, default=datetime.utcnow())
+
+    def __repr__(self):
+        return 'Notifaction {}'.format(self.notifaction[0:10])
+
+
+
 class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cls_name = db.Column(db.String(64))
