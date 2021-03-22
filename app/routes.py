@@ -29,13 +29,11 @@ def home():
 #------------ Admin ---------------#
 
 
-@app.route('/administrator', methods=['GET', 'POST'])
+@app.route('/administrator', methods=['GET'])
 @login_required
 def administrator():
     if not current_user.is_authenticated:
         return redirect(url_for('admin_login'))
-        
-    message = request.form.get('message')
         
     students = Student.query.all()
     teachers = Teacher.query.all()
@@ -46,8 +44,7 @@ def administrator():
     l_worker = LeaveWorker.query.all()
     subjects = Subject.query.all()
     return render_template('administrator/index.html', 
-    title='Home', 
-    message=message, 
+    title='Home',
     students=students, 
     teachers=teachers, 
     workers=workers, 
@@ -57,6 +54,7 @@ def administrator():
     l_worker=l_worker,
     subjects=subjects
     )
+
 
 
 

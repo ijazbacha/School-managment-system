@@ -3,13 +3,31 @@
 
 
 {% block content %} 
-{{ messaage }}
 
-{{ title }}
 <div class="container">
-    <form action="" method="GET">
-        <textarea name="message" id="messaage" cols="30" rows="10" placeholder="Send Notifiaction"></textarea>
-        <button type="submit">Send</button>
+    <form action="" method="POST" class="m-4">
+        <div class="mb-3 mt-3">
+            <textarea class="form-control" name="notification" id="Notification" rows="13" placeholder="Write Notification"></textarea>  
+        </div>
+        <div class="mb-3">
+            <input class="form-check-input" type="radio" name="sender" value="Teacher_student" id="flexRadioDefault1">
+            <label class="form-check-label" for="flexRadioDefault1">
+              Student/Teacher
+            </label>
+          </div>
+        <div class="mb-3">
+            <input class="form-check-input" type="radio" name="sender" value="Teacher" id="flexRadioDefault2">
+            <label class="form-check-label" for="flexRadioDefault2">
+                Teacher
+            </label>
+        </div>
+        <div class="mb-3">
+            <input class="form-check-input" type="radio" name="sender" value="Student" id="flexRadioDefault3">
+            <label class="form-check-label" for="flexRadioDefault3">
+              Female
+            </label>
+        </div>
+            <button type="submit"  class="btn btn-success">Submit</button>
     </form>
     
     <div id="std-box">
