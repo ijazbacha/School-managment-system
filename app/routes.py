@@ -95,9 +95,23 @@ def update_notification(id):
         notify.notification = request.form['notification']
         notify.sender = request.form.get('sender')
         db.session.commit()
+        flash('Notification is successfully updated!')
         return redirect(url_for('get_notification'))
     return render_template('administrator/index.html', title='Update Notification', notify=notify)
 
+
+
+@app.route('/administrator/delete_notification/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_notification(id):
+    try:
+        notify = Notification.query.filter_by(id=id).first()
+        db.session.delete(notify)
+        db.session.commit()
+        flash('Notification is successfully deleted!')
+        return redirect(url_for('get_notification'))
+    except:
+        return redirect(url_for('get_notification'))
 
 
 
@@ -1062,6 +1076,8 @@ def show_student_attendance(teacher_id, class_id):
     prev_url = url_for('show_student_attendance', teacher_id=teacher_id, class_id=class_id, page=query.prev_num) \
         if query.has_prev else None
     return render_template('teacher/show_student_attendance.html', query=query.items, next_url=next_url, prev_url=prev_url)
+
+
 
 
 #------------- End Teacher -------------#
