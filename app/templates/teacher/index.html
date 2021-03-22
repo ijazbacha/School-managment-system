@@ -55,14 +55,18 @@
         </div>
         <div class="button">
             <a href=" {{ url_for('upload_lecture') }} "><button type="submit" class="btn btn-secondary">Upload Lecture</button></a>
+            
             <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal">
                 View Lectures
             </button>
+
             {% if g.user.stdclass.id %}
             <a href=" {{ url_for('take_student_attendance', class_id=g.user.stdclass.id) }} "><button type="submit" class="btn btn-secondary">Take Attendance</button></a>
             
             <a href=" {{ url_for('show_student_attendance', teacher_id=g.user.id, class_id=g.user.stdclass.id) }} "><button type="submit" class="btn btn-secondary">Show Attendance</button></a>
             {% endif %}
+
+            <a href=" {{ url_for('teacher_notification') }} "><button type="submit" class="btn btn-secondary">Notification</button></a>
         </div>
     </div>
 

@@ -1,3 +1,4 @@
+from operator import or_
 from app import app, db
 from datetime import datetime, date
 from werkzeug.utils import secure_filename
@@ -82,7 +83,7 @@ def post_notification():
 @app.route('/administrator/get_notification')
 @login_required
 def get_notification():
-    notifications = Notification.query.all()
+    notifications = Notification.query.order_by(Notification.notify_date.desc()).all()
     return render_template('administrator/get_notification.html', title='Notification', notifications=notifications)
 
 
@@ -1079,6 +1080,11 @@ def show_student_attendance(teacher_id, class_id):
 
 
 
+@app.route('/teacher/teacher_notification')
+def teacher_notification():
+    notifications = Notification.query.filter(Notification.sender != 'Student').order_by(Notification.notify_date.desc()).all()
+    return render_template('teacher/teacher_notification.html', notifications=notifications)
+
 
 #------------- End Teacher -------------#
 
@@ -1193,6 +1199,12 @@ def student_attendance_view(std_id, class_id):
     prev_url = url_for('student_attendance_view', std_id=std_id, class_id=class_id, page=query.prev_num) \
         if query.has_prev else None
     return render_template('student/student_attendance_view.html', query=query.items, next_url=next_url, prev_url=prev_url)
+
+
+@app.route('/student/student_notification')
+def student_notification():
+    notifications = Notification.query.filter(Notification.sender != 'Teacher').order_by(Notification.notify_date.desc()).all()
+    return render_template('student/student_notification.html', notifications=notifications)
 
 
 #------------- End Student -------------#

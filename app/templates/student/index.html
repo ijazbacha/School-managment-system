@@ -47,11 +47,16 @@
             <p><b> Class: </b> <span style="float: right;">{{ g.std_user.stdclass.cls_name }}</span> </p>
             <p><b> Join Date: </b> <span style="float: right;">{{ g.std_user.join_date.strftime('%Y-%m-%d') }} </span></p>
         </div>
+        
         <div class="button">
+            
             <button type="button" class="btn btn-secondary " data-bs-toggle="modal" data-bs-target="#exampleModal">
                 View Lectures
             </button>
+            
             <a href=" {{ url_for('student_attendance_view', std_id=g.std_user.id, class_id=g.std_user.stdclass.id)}} "><button type="submit" class="btn btn-secondary">View Attendance</button></a>
+        
+            <a href=" {{ url_for('student_notification') }} "><button type="submit" class="btn btn-secondary">Notification</button></a>
         </div>
     </div>
 
